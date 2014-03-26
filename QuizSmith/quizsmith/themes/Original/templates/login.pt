@@ -1,0 +1,36 @@
+<metal:html 
+    xmlns:tal="http://xml.zope.org/namespaces/tal"
+    xmlns:metal="http://xml.zope.org/namespaces/metal"
+    use-macro="load: master.pt">
+    
+    <tal:block metal:fill-slot="title">
+        <title>Login - Trivia</title>
+    </tal:block>  
+
+    <tal:block metal:fill-slot="content">
+        <div id="login">
+            <h4>Login</h4>
+            
+            <form action="${request.application_url}/login" method="post">
+                <label> Email Address
+                    <input type="text" name="email" value="" />
+                </label>
+                <label> Password
+                    <input type="password" name="password" value="" />
+                </label>
+                <br />
+                <input class="link" type="submit" name="form.submitted" value="Log In" />
+                <input class="link" type="button" name="to.menu" value="Main Menu"/>
+                <input type="hidden" name="local" value="1"/>
+            </form>
+        
+            <tal:block condition="allow_registration">
+                <a href="${request.application_url}/register">Not a player, register here.</a>
+            </tal:block>
+            
+        </div>
+
+        
+    </tal:block>
+    
+</metal:html>

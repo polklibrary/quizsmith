@@ -1,0 +1,59 @@
+<metal:html 
+    xmlns:tal="http://xml.zope.org/namespaces/tal"
+    xmlns:metal="http://xml.zope.org/namespaces/metal"
+    use-macro="load: edit-master.pt">
+    
+    
+    <tal:block metal:fill-slot="title">
+        <title>Edit - Trivia</title>
+    </tal:block>  
+    
+    <tal:block metal:fill-slot="logo" content="nothing" />
+    
+    <tal:block metal:fill-slot="js">
+        <script type="text/javascript">
+            jq(document).ready(function(){
+                jq('.sortable ').sortable({'placeholder':'state-highlight'});
+                jq('.sortable ').disableSelection();
+                
+                setInterval(function(){
+                    jq('.sortable').find('input').each(function(i,t){
+                        if(jq(t).prop('value') != i) {
+                            jq(t).prop('value',i);
+                            jq('#save-order').fadeIn(250);
+                        }
+                    });
+                },500);
+                
+            });
+        </script>
+    </tal:block>  
+    
+    <tal:block metal:fill-slot="content">
+    
+        <div class="h3">Manage: Listing Categories</div>
+        
+        <div class="main">
+            <form method="post">
+                <ul class="sortable">
+                    <tal:block repeat="category categories">
+                        <li class="state-default">
+                            <img src="${request.application_url}/themes/AdminPanel/images/sort_both.png" alt="Move" />
+                            <a href="${request.application_url}/edit/category/${category.id}">${category.name}</a>
+                            <input type="hidden" name="${category.id}" value="${repeat.category.index}" />
+                        </li>
+                    </tal:block>
+                </ul>
+                
+                <div class="options nb">
+                    <input id="save-order" class="button left" type="submit" name="form.submit" value="Save New Order" />
+                    <a class="clear button" href="${request.application_url}/edit/category/add">Add New Category</a>
+                    <a class="button" href="${request.application_url}/edit/category/import">Import Category</a>
+                </div>
+            </form>
+        </div>
+       
+        
+    </tal:block>
+    
+</metal:html>

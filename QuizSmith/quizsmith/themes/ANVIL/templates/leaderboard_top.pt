@@ -1,0 +1,38 @@
+<metal:html 
+    xmlns:tal="http://xml.zope.org/namespaces/tal"
+    xmlns:metal="http://xml.zope.org/namespaces/metal"
+    use-macro="load: master.pt">
+
+    <tal:block metal:fill-slot="title">
+        <title>Leaderboards - Trivia</title>
+    </tal:block>  
+    
+    <tal:block metal:fill-slot="logo"></tal:block>  
+    
+    <tal:block metal:fill-slot="js">
+        <script type="text/javascript">
+        </script>
+    </tal:block> 
+    
+    <tal:block metal:fill-slot="content">
+    
+        <div id="leaderboard">
+
+            <div class="navigation">
+                <a class="slink" href="${request.application_url}"> Main Menu </a>
+                <a tal:condition="request.user" class="slink" href="${request.application_url}/leaderboard"> Leaderboard Scores </a>
+                
+                <div >
+                    <h2 class="rivets">All Time Top Leaders</h2>
+                </div>
+                
+                <div>No data at this time</div>
+
+            </div>
+            
+            <div class="clear"></div>
+        </div>
+            
+    </tal:block>
+    
+</metal:html>

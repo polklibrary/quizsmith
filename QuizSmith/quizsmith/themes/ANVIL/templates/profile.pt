@@ -1,0 +1,162 @@
+<metal:html 
+    xmlns:tal="http://xml.zope.org/namespaces/tal"
+    xmlns:metal="http://xml.zope.org/namespaces/metal"
+    use-macro="load: master.pt">
+
+    <tal:block metal:fill-slot="title">
+        <title>Profile - Trivia</title>
+    </tal:block>  
+    
+    <tal:block metal:fill-slot="logo"></tal:block>  
+    
+    <tal:block metal:fill-slot="js">
+        <script type="text/javascript" src="${request.application_url}/themes/ANVIL/jquery.dataTables.min.js"></script>
+        <script type="text/javascript">
+            jq(document).ready(function(){
+                
+                jq("#profile-categories").dataTable({
+                    "iDisplayLength": 20,
+                    "aaSorting": [[ 0, 'desc' ]], 
+                    "bLengthChange": false,
+                    "bFilter": false,
+                    "bProcessing": false,
+                    "bServerSide": false,
+                }); 
+                
+                jq("#profile-results").dataTable({
+                    "iDisplayLength": 20,
+                    "aaSorting": [[ 0, 'desc' ]], 
+                    "bLengthChange": false,
+                    "bFilter": false,
+                    "bProcessing": false,
+                    "bServerSide": false,
+                }); 
+                
+            });
+        </script>
+    </tal:block> 
+    <tal:block metal:fill-slot="css">
+        <link rel="stylesheet" type="text/css" href="${request.application_url}/themes/ANVIL/jquery.dataTables.css" />
+        <style>
+            body { width: 1000px; }
+        </style>
+    </tal:block>  
+    
+    <tal:block metal:fill-slot="content">
+    
+        <div id="profile">
+            
+            <div id="navigation">
+                <a class="slink" href="${request.application_url}/">Main Menu</a>
+                <a class="slink" href="${request.application_url}/leaderboard">View Leaderboard</a>
+                <tal:block condition="category">
+                    <a class="slink" href="${request.application_url}/profile">Go Back</a>
+                </tal:block>
+                
+                <div>
+                    <h2 class="rivets">${request.user.alias}'s Profile</h2>
+                    <div class="information">
+                        <b>Name:</b> ${request.user.fullname} <br />
+                        <b>Email:</b> ${request.user.email}
+                        <tal:block condition="request.user.is_local"><a href="${request.application_url}/profile/change">(Change Password?)</a></tal:block>
+                    </div>
+                </div>
+            </div>
+            
+            <tal:block condition="played">
+                <table id="profile-categories" class="dataTable" tal:condition="python: category==0" tal:on-error="nothing">
+                    <thead>
+                    <tr>
+                        <th style="max-width: 200px;">Modules Played</th>
+                        <th>Played</th>
+                        <th>Best %</th>
+                        <th>Best Leaderboard</th>
+                        <th>Best Time</th>
+                        <th>Last Played</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tal:block repeat="category categories">
+                            <tr>
+                                <td>
+                                    <a tal:attributes="href string:${request.application_url}/profile?category=${category.Test.category}">
+                                        ${category.Test.category} <br /><i>(See Scores)</i>
+                                    </a>
+                                </td>
+                                <td>
+                                    ${category.Count}
+                                    <tal:block condition="python:category.Count==1">time</tal:block>
+                                    <tal:block condition="python:category.Count!=1">times</tal:block>
+                                </td>
+                                <td>
+                                    ${category.best_percentage}%
+                                </td>
+                                <td>
+                                    ${category.best_competitive} score
+                                </td>
+                                <td>
+                                    ${category.best_duration}
+                                </td>
+                                <td> 
+                                    <span tal:replace="python: category.last_played.strftime('%m/%d/%Y %I:%M %p')"></span>
+                                </td>
+                            </tr>
+                        </tal:block>
+                    </tbody>
+                </table>
+                    
+                <table id="profile-results" class="tablesorter" tal:condition="python: category!=0" tal:on-error="nothing">
+                    <thead>
+                        <tr>
+                            <th>Score</th>
+                            <th>Leaderboard</th>
+                            <th>Total Time</th>
+                            <th>Completed?</th>
+                            <th>Options</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tal:block repeat="test tests">
+                            <tr>
+                                <td>
+                                    ${test.percentage}%
+                                </td>
+                                <td>
+                                    ${test.total_competitive} score
+                                </td>
+                                <td tal:content="python:format_time(test.time_spent)">
+                                    ${test.time_spent}
+                                </td>
+                                <td>
+                                    <tal:block condition="test.completed">Yes</tal:block>
+                                    <tal:block condition="not: test.completed">No</tal:block>
+                                </td>
+                                <td>
+                                    <a tal:attributes="href string:${request.application_url}/profile/score/${test.id}">View</a>
+                                    |
+                                    <a tal:attributes="href string:${request.application_url}/profile/email/${test.id}">Email</a>
+                                    |
+                                    <a tal:attributes="href string:${request.application_url}/profile/pdf/${test.id}.pdf">Print</a>
+                                    <tal:block condition="python:request.user.show_d2l_options()">
+                                        |
+                                        <a target="_blank" onclick="window.open(this.href, 'Upload','left=20,top=20,width=600,height=500,toolbar=1,resizable=0'); return false;"
+                                           href="${request.application_url}/d2l/dropbox/${test.id}">D2L Dropbox</a>
+                                    </tal:block>    
+                                </td>
+                            </tr>
+                        </tal:block>
+                    <tbody>
+                </table>
+            </tal:block>
+            
+            <tal:block condition="not: played">
+                You have not played a trivia round yet.
+                <a tal:attributes="href string:${request.application_url}/category">Click here to start a round of trivia.</a>
+            </tal:block>
+
+                
+        </div>
+            
+    </tal:block>
+    
+</metal:html>

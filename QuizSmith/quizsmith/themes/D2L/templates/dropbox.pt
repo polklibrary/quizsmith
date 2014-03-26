@@ -1,0 +1,273 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal">
+
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+  
+    <tal:block metal:define-slot="title">
+        <title>Trivia - D2L Dropbox</title>
+    </tal:block>
+    
+    <link rel="stylesheet" type="text/css" href="${request.application_url}/themes/D2L/d2l.css" />
+    <script type="text/javascript" src="${request.application_url}/themes/D2L/jquery-1.9.1.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('input.cancel').click(function(){
+                window.close();
+            });
+            
+            $('#feedback').click(function(){
+                $(this).val('');
+                $(this).removeClass('example');
+                $('#feedback-submit').prop('disabled',false);
+                $(this).unbind('click');
+            });
+                
+            $('#feedback-submit').click(function(){
+                var msg = $('#feedback').val();
+                var category = $('input[name="feedback.category"]').val();
+                if ($.trim(msg) != '') {
+                    var html = $('.feedback').html();
+                    $('.feedback').html('Sending...');
+                    $.post('${request.application_url}/help/feedback',{'feedback.message':msg, 'feedback.from': '${request.path_url}', 
+                                                                       'feedback.category': category, 'feedback.player': '${request.user.alias}'},function(data){
+                        if(data.sent_status == 2)
+                            $('.feedback').html('<b>Successfully Sent!</b>');
+                        if(data.sent_status <= 1)
+                            $('.feedback').html(html).append('<br /> <span class="warn">Failed to send</span>');
+                    })
+                }
+                else
+                    $('.feedback').append('<br /> <span class="warn">You must provide a message.</span>');
+            });
+        });
+    </script>
+    
+    <style>
+        div.course {
+            background-color: #eeeeee;
+            border-radius: 5px;
+            color: black;
+            padding: 5px 10px;
+            margin: 0 auto;
+            width: 480px;
+        }
+        div.iframe {
+            margin: 10px auto;
+            width: 500px;
+        }
+        div.preview {
+            background-color: #666666;
+            border: 1px solid #333333;
+            border-radius: 5px 5px 0 0;
+            color: white;
+            font-weight: bold;
+            padding: 2px 5px;
+            width: 490px;
+            
+        }
+        iframe {
+            border: 1px solid #333333;
+            height: 300px;
+            width: 500px;
+        }
+        div.desc {
+            padding: 10px 0px;
+            text-align: center;
+        }
+        span.cname {
+            font-size: 16px;
+            font-weight: bold;
+        }
+        span.cinfo {
+            font-size: 12px;
+            font-style: italic;
+            margin-left: 20px;
+        }
+        div.buttons {
+            padding: 10px 0px 0px 0px;
+            text-align: center;
+        }
+        input.submit {
+            background-image: url("${request.application_url}/themes/D2L/images/upload.png");
+            background-repeat: no-repeat;
+            border: 0 none;
+            cursor: pointer;
+            height: 32px;
+            width: 67px;
+        }
+        input.cancel {
+            background-image: url("${request.application_url}/themes/D2L/images/cancel.png");
+            background-repeat: no-repeat;  
+            border: 0 none;
+            cursor: pointer;
+            height: 32px;
+            width: 67px;
+        }
+        
+        div.bubble {
+            border-radius: 10px 10px 10px 10px;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            margin: 50px auto;
+            padding: 5px 10px;
+            text-align: center;
+            width: 300px;
+        }
+        div.success {
+            background-color: #088A08;
+            border: 1px solid #0B610B;
+        }
+        div.failure {
+            background-color: #B40404;
+            border: 1px solid #610B0B;
+        }
+        div.warning {
+            background-color: orange;
+            border: 1px solid red;
+            color: black;
+        }
+        div.alts {
+            margin: 10px auto;
+            text-align: center;
+            width: 400px;
+        }
+        div.feedback {
+            background-color: mintcream;
+            border: 1px solid #666666;
+            border-radius: 5px 5px 5px 5px;
+            margin: 0 auto;
+            padding: 10px;
+            text-align: center;
+            width: 400px;
+        }
+        div.feedback > input {
+            margin-top: 10px;
+        }
+        div.feedback > .warn {
+            font-weight: bold;
+            color: red;
+        }
+        label.b {
+            font-weight: bold;
+        }
+        textarea.example {
+            color: gray;
+            font-style: italic;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div id="header">
+        <img src="${request.application_url}/themes/D2L/images/d2l-icon.png" /> 
+        <a href="https://uwosh.courses.wisconsin.edu/d2l/home">My Home</a> 
+        <img src="${request.application_url}/themes/D2L/images/d2l-nav-arrow.png" /> 
+        <a href="${request.application_url}">ANVIL</a> 
+        <img src="${request.application_url}/themes/D2L/images/d2l-nav-arrow.png" /> 
+        <span>Dropbox Upload</span> 
+    </div>
+
+    <tal:block condition="python:status==0">
+    
+        <tal:block condition="courses">
+            <!-- Courses found with proper dropbox -->
+            <div id="content">
+                <form action="${request.application_url}/d2l/dropbox/submit">
+                    
+                    <div class="iframe">
+                        <div class="preview">Preview: Your file</div>
+                        <iframe frameBorder="0" src="${request.application_url}/profile/pdf/${id}.pdf"></iframe>
+                    </div>
+                    
+                    <div class="course">
+                        <span class="cname">Select Course:</span>
+                        &nbsp;
+                        <select name="course_info">
+                            <tal:loop repeat="course courses">
+                                <option value="${course.org_unit}|${course.folder_id}">${course.name}</option>
+                            </tal:loop>
+                        </select>
+                    </div>
+                    <div class="buttons">
+                        <input class="submit" type="submit" value="" name="" alt="Upload" />
+                        <input class="cancel" type="button" value="" name="" alt="Cancel" />
+                        <input type="hidden" value="${id}" name="id" />
+                    </div>
+                    
+                </form>
+                
+                <br />
+                <br />
+            </div>
+        </tal:block>
+        
+        <tal:block condition="not: courses">
+            <!-- NO courses found with proper dropbox, show alternative options -->
+            <div class="bubble warning">
+                Sorry, we are not able to find the proper dropboxes for your course.  If this was an assignment, please us an alternative option below.
+            </div>            
+            <div class="alts">
+                <b>Alternatives</b>
+                <br />
+                <a href="${request.application_url}/profile/pdf/${id}.pdf">
+                    Print your results
+                </a> 
+                <br />
+                <a href="${request.application_url}/profile/email/${id}">
+                    Email your results
+                </a>
+            </div>
+        </tal:block>
+        
+    </tal:block>
+    
+    
+    <tal:block condition="python:status>=200">
+    
+        <tal:block condition="python:status==200">
+            <!-- Submit Success -->
+            <div class="bubble success">
+                Successfully Uploaded!
+            </div>
+            
+            <div class="feedback">
+                <label class="b">Send us your feedback or suggestions.</label>
+                <br />
+                <label>Please be detailed and descriptive.</label>
+                <textarea id="feedback" class="example" name="feedback.message" cols="40" rows="3">This is optional...</textarea>
+                <br />
+                <input id="feedback-submit" type="submit" name="submit" value="Send" disabled="true" />
+                <input type="hidden" name="feedback.category" value="${category}" />
+            </div>
+            
+        </tal:block>
+        
+        <tal:block condition="python:status>200">
+            <!-- Submit Failed, give alternative options -->
+            <div class="bubble failure">
+                Sorry, we were unable to upload your results.  Please try again later or try an alternative option below.  
+            </div>            
+            <div class="alts">
+                <b>Alternatives</b>
+                <br />
+                <a href="${request.application_url}/profile/pdf/${id}.pdf">
+                    Print your results
+                </a> 
+                <br />
+                <a href="${request.application_url}/profile/email/${id}">
+                    Email your results
+                </a>
+            </div>
+        </tal:block>
+        
+    </tal:block>
+
+</body>
+</html>

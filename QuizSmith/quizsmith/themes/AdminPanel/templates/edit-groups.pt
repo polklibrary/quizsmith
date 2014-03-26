@@ -1,0 +1,148 @@
+<metal:html 
+    xmlns:tal="http://xml.zope.org/namespaces/tal"
+    xmlns:metal="http://xml.zope.org/namespaces/metal"
+    use-macro="load: edit-master.pt">
+    
+    
+    <tal:block metal:fill-slot="title">
+        <title>Edit - Trivia</title>
+    </tal:block>  
+    
+    <tal:block metal:fill-slot="js">
+        <script type="text/javascript">
+            jq(document).ready( function() {
+                Validators.confirm_message = 'Are you sure you want to delete this?';
+                Validators.setup();
+            });
+        </script>
+    </tal:block>  
+    
+    <tal:block metal:fill-slot="logo" content="nothing" />
+    
+    <tal:block metal:fill-slot="content">
+    
+        <div class="h3">Managing: Groups</div>
+        
+        <div class="edit-groups">
+            
+            <form class="user_col" method="post">
+                <h3> Users </h3>
+                <br />
+                
+                <h4>Find User By Email</h4>
+                <input type="text" value="${email}" name="edit.find.user" size="40" />
+                
+                <br />
+                <br />
+                
+                <input class="button" type="submit" value="Find User" name="edit.user.find" />
+                
+                <tal:block condition="not:user">
+                    <b>(No user found)</b>
+                </tal:block>
+                <tal:block condition="user">
+                    <b>(Found User)</b>
+                </tal:block>
+                
+                <tal:block condition="user">
+                    <br />
+                    <br />
+                    
+                    <h4>Add To Group</h4>
+                    <select name="edit.user.group.add">
+                        <tal:loop repeat="group groups">
+                            <option value="${group.id}">${group.name}</option>
+                        </tal:loop>
+                    </select>
+                    <input class="button" type="submit" value="Add To Group" name="edit.user.group.add.submit" />
+                    
+                    <br /><br />
+                    
+                    <h4>User Currently In</h4>
+                    <select name="edit.user.group.remove">
+                        <tal:loop repeat="group python:user.get_groups()">
+                            <option value="${group.id}">${group.name}</option>
+                        </tal:loop>
+                    </select>
+                    <input class="button validate-confirmation" type="submit" value="Remove From Group" name="edit.user.group.remove.submit" />
+
+                </tal:block>
+            </form>
+            
+            <form class="group_col" method="post">
+                <h3> Groups </h3>
+                <br />
+                <input class="button" type="submit" value="Add Another Group" name="edit.group.new.submit" />
+                
+                <div class="line">&nbsp;</div>
+                
+                <select name="edit.group.find">
+                    <tal:loop repeat="group groups">
+                        <option value="${group.id}" tal:attributes="selected python:(group.id==editing_group.id)|nothing">${group.name}</option>
+                    </tal:loop>
+                </select>
+                <br />
+                <input class="button" type="submit" value="Edit Group" name="edit.group.find.submit" />
+                <input class="button" type="submit" value="Delete Group" name="edit.group.delete.submit" />
+                
+                <tal:block condition="editing_group">
+                    <br />
+                    <br />
+                    <h4>Editing: ${editing_group.name}</h4>
+                    
+                    <label>Id:</label>
+                    <input type="text" readonly="true" value="${editing_group.id}" name="edit.group.edit.id" size="5" />
+                    <br/><br/>
+                    
+                    <label>Name:</label>
+                    <input type="text" value="${editing_group.name}" name="edit.group.edit.name" size="35" />
+                    <br/><br/>
+                    
+                    <label>Description:</label>
+                    <input type="text" value="${editing_group.description}" name="edit.group.edit.description" size="35" />
+                    <br/><br/>
+                    
+                    <label>Play:</label>
+                    <input type="checkbox" value="on" checked="${editing_group.play}" name="edit.group.edit.play" />
+                    <i>(View Permission)</i>
+                    <br/><br/>
+                    
+                    <label>Edit:</label>
+                    <input type="checkbox" value="on" checked="${editing_group.edit}" name="edit.group.edit.edit" />
+                    <i>(View Permission)</i>
+                    <br/><br/>
+                    
+                    <label>Review:</label>
+                    <input type="checkbox" value="on" checked="${editing_group.review}" name="edit.group.edit.review" />
+                    <i>(View Permission)</i>
+                    <br/><br/>
+                    
+                    <label>Use Admin Panel:</label>
+                    <input type="checkbox" disabled="true" value="on" checked="${editing_group.use_admin_panel}" name="edit.group.edit.use_admin_panel" />
+                    <i>(View Permission)</i>
+                    <br/><br/>
+                    
+                    <b>Auto-assign this Group to Categories:</b>
+                    <select name="edit.group.edit.categories" multiple="true" size="20">
+                        <tal:block repeat="category categories">
+                            <option value="${category.id}" tal:attributes="selected python:category in editing_group.categories">${category.name}</option>
+                        </tal:block>
+                    </select>
+                    <br/><br/>
+                    
+                    <input class="button" type="submit" value="Save Changes" name="edit.group.edit.submit" />
+                </tal:block>
+                
+                
+                
+                
+                
+                
+                
+            </form>
+            <div class="clear"></div>
+        </div>
+        
+    </tal:block>
+    
+</metal:html>

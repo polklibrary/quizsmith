@@ -1,0 +1,296 @@
+/*
+*   Copyright 2014 UW Board of Regents
+*
+*   Licensed under the Apache License, Version 2.0 (the "License");
+*   you may not use this file except in compliance with the License.
+*   You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+*   Unless required by applicable law or agreed to in writing, software
+*   distributed under the License is distributed on an "AS IS" BASIS,
+*   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*   See the License for the specific language governing permissions and
+*   limitations under the License.
+*/
+h1, .h1 {
+    font-size: 28px;
+    font-weight: bold;
+    margin: 0;
+}
+h2, .h2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+}
+h3, .h3 { 
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0;
+}
+h4, .h4 {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0 0 5px;
+}
+
+#edit-content .subheading {
+    padding: 5px 10px;
+}
+
+.updates {
+    background-color: white;
+    border: 2px solid #6495ED;
+    border-radius: 10px;
+    color: darkred;
+    font-weight: bold;
+    margin: 10px 0px 0px 172px;
+    padding: 5px 10px;
+    width: 780px;
+}
+
+span.note { font-size: 12px; font-style: italic; }
+div.line { border-bottom: 1px dotted #aaaaaa; height: 15px; margin-bottom: 15px; width: 100%; }
+
+.row:nth-child(odd) {
+    background-color: #B1CDFF;
+    border-bottom: 2px solid #bbbbbb;
+}
+.row:nth-child(even) {
+    background-color: #D4E3FF;
+    border-bottom: 2px solid #bbbbbb;
+}
+.row.end {
+    border-bottom: 0px none;
+    border-radius: 0px 0px 10px 10px;
+}
+
+li.sub {
+    margin-left: 20px;
+    list-style-type: circle;
+}
+
+input[type="file"]{
+    background-color: #FFFFFF;
+    border: 1px solid #AAAAAA;
+    border-radius: 5px;
+}
+
+
+#content {
+    font-size: 12px;
+    margin: 0;
+    width: 1000px;
+}
+
+#edit-nav {
+    background-color: white;
+    border-radius: 0px 10px 10px 0px;
+    border: 2px solid #6495ED;
+    border-left: 0px none;
+    float: left;
+    width: 150px;
+}
+#edit-nav  > div {
+    padding: 10px 0px 10px 10px;
+    border-radius: 0px 0px 5px 0px;
+}
+
+#edit-nav  > div.clear {
+    padding: 0;
+}
+
+#edit-nav  > div.h3, #edit-content > div.h3 {
+    color: white;
+    background-color: #6495ED;
+    border-radius: 5px 5px 0px 0px;
+    padding: 5px 15px;
+}
+#edit-nav  > div.h3 { border-radius: 0px 5px 0px 0px; }
+
+#edit-content {
+    background-color: white;
+    border-radius: 10px;
+    border: 2px solid #6495ED;
+    float: left;
+    margin-left: 20px;
+    width: 800px;
+}
+
+#edit-content  .options {
+    border-bottom: 2px solid #bbbbbb;
+    height: 25px;
+    padding: 10px;
+    text-align: right;
+}
+#edit-content  .options.nb {
+    border-bottom: 0 none !important;
+}
+
+#edit-content .button {
+   background-color: #6495ED;
+   border-radius: 5px;
+   border: 1px solid #3366cc;
+   box-shadow: inset 0px -7px  2px 0px #AAC6F7;
+   color: white;
+   cursor: pointer;
+   display: inline-block;
+   font-size: 14px;
+   font-weight: bold;
+   margin-right: 10px;
+   padding: 2px 10px;
+}
+
+#edit-content  .button:hover {
+   color: #B7E0FF;
+   text-decoration: none;
+}
+#edit-content .button:active {
+    color: #CCDEFC;
+    box-shadow: inset 0px 3px 2px 0px #417BE0;
+}
+
+/* === MAIN EDIT LANDING PAGE ===================*/
+
+#edit-content > .main { padding: 10px; }
+#edit-content > .main ul { padding: 0; }
+#edit-content > .main #save-order { display: none; }
+
+.sortable li.state-default {
+    list-style: none;
+    border: 1px dashed #cccccc;
+    margin-bottom: 2px;
+}
+.sortable li.state-highlight {
+    list-style: none;
+    border: 1px dotted gold;
+    height: 1px;
+}
+.sortable li > img { cursor: n-resize; vertical-align: middle; margin: 0 5px; }
+.sortable li > a { vertical-align: middle; }
+
+/* === CATEGORY EDIT ===================*/
+
+#edit-content > .edit-category textarea{
+    height: 600px;
+    width: 775px;
+}
+
+#edit-content > .edit-category div.row, #edit-content > .standard div.row {
+    padding: 10px;
+}
+#edit-content > .standard div.row label > * {
+    vertical-align: middle;
+}
+
+#edit-content > .edit-category div.row.playable select{
+    float: left;
+    width: 30%;
+}
+#edit-content > .edit-category div.row.playable div {
+    font-weight: bold;
+    float: left;
+    margin-left: 10px;
+    width: 60%;
+}
+
+/* === QUESTIONS LIST ===================*/
+
+#edit-content .question-list > div {
+    padding: 10px;
+}
+
+#edit-content .question-list div.h4 {
+    border-bottom: 1px solid black;
+    font-weight: bold;
+    padding: 0px !important;
+}
+
+#edit-content .question-list div.h4 > a {
+    float: right;
+    margin-top: 9px;
+}
+
+#edit-content .question-list div.row  > div.ah{
+    margin: 5px 0 5px 0;
+    padding: 0 0 0 30px;
+}
+
+
+/* === QUESTION EDIT ===================*/
+
+#edit-content .question-edit label{
+    font-weight: bold;
+}
+#edit-content .question-edit textarea, #edit-content .question-edit div.wrapper-questions iframe {
+    height: 50px !important;
+    width: 750px;
+}
+
+#edit-content .question-edit .remove {
+    cursor: pointer;
+    float: right;
+    margin-top: -10px;
+    margin-right: 0px;
+}
+
+
+#edit-content .question-edit form > div {
+    padding: 20px;
+}
+
+#edit-content .question-edit div.wrapper-buttons {
+    text-align: right;
+}
+#edit-content .question-edit  span.add_wrong > select, #edit-content .question-edit  span.add_wrong > span.button{
+    margin-left: 4px;
+}
+
+
+/* === GROUPS EDIT ===================*/
+
+#edit-content .edit-groups h3 {
+    border-bottom: 1px solid #6495ED;
+}
+
+#edit-content .edit-groups form.user_col {
+    float: left;
+    padding: 10px;
+    min-height: 400px;
+    width: 350px;
+}
+
+#edit-content .edit-groups form.group_col {
+    border-left: 2px solid #6495ED;
+    float: left;
+    min-height: 400px;
+    padding: 10px;
+    width: 350px;
+}
+
+#edit-content .edit-groups form.group_col > label {
+    display: inline-block;
+    text-align: right;
+    width: 80px;
+}
+
+#edit-content .edit-groups form.group_col select {
+    margin-bottom: 10px;
+    width: 300px;
+}
+
+
+/* === PROPS EDIT ===================*/
+
+#edit-content .edit-props  {
+    padding: 10px;
+}
+
+#edit-content > .edit-assessments .row{
+    padding: 10px;
+}
+
+#edit-content > .edit-assessments input[type="button"]{
+    float: left;
+}
+

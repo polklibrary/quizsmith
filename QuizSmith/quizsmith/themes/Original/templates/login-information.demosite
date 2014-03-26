@@ -1,0 +1,24 @@
+        <div id="register">
+            <h4>Demo Site - Login Information</h4>
+            
+            <b>Example Admin Account</b>
+            <br/>
+            User: <i>admin@test.com</i>
+            <br/>
+            Pass: <i>admin123</i>
+            <br/>
+            <br/>
+            
+            <b>Example Editor Account</b>
+            <br/>
+            User: <i>editor@test.com</i>
+            <br/>
+            Pass: <i>editor123</i>
+            <br/>
+            <br/>
+
+            <b>Example Player Account</b>
+            <br/>
+            <a href="${request.application_url}/register">Create an account</a>
+            
+        </div>

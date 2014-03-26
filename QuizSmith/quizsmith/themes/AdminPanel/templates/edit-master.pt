@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal">
+
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+  
+    <tal:block metal:define-slot="title">
+        <title>Trivia</title>
+    </tal:block>  
+    <link rel="stylesheet" type="text/css" href="${request.application_url}/themes/AdminPanel/ui-lightness/jquery-ui-1.10.2.custom.min.css" />
+    <link rel="stylesheet" type="text/css" href="${request.application_url}/themes/AdminPanel/trivia.css${request.day_caching}" />
+    <link rel="stylesheet" type="text/css" href="${request.application_url}/themes/AdminPanel/edit.css${request.day_caching}" />
+  
+    <script type="text/javascript" src="${request.application_url}/themes/AdminPanel/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="${request.application_url}/themes/AdminPanel/jquery-ui-1.10.2.custom.min.js"></script>
+    <script type="text/javascript" src="${request.application_url}/themes/AdminPanel/fanstatic/tinymce/tiny_mce_src.js"></script>
+    <script type="text/javascript" src="${request.application_url}/themes/AdminPanel/tinymce-settings.js${request.day_caching}"></script>
+    <script type="text/javascript" src="${request.application_url}/themes/AdminPanel/trivia.js${request.day_caching}"></script>
+    <script type="text/javascript">
+        Trivia.root_url = "${request.application_url}";
+        Trivia.static_url = "${request.application_url}/themes/AdminPanel/";
+    </script>
+    
+    
+    <tal:block metal:define-slot="css" tal:content="nothing">
+       Extendable CSS Slot
+    </tal:block>  
+    <tal:block metal:define-slot="js" tal:content="nothing">
+       Extendable JS Slot
+    </tal:block> 
+  
+</head>
+
+<body>
+
+    <tal:block condition="message">
+        <div id="message" class="${message_class}">${message}</div> 
+        <br />
+    </tal:block> 
+
+    <tal:block metal:define-slot="body">
+    
+        <div id="content">
+        
+            <div id="edit-nav">
+                <div class="h3">Manage</div>
+                <div>
+                
+                    <div>
+                        <a href="${request.application_url}/edit">Home</a>
+                    </div>
+                    
+                    <br />
+                    
+                    <div>
+                        <a href="${request.application_url}/edit/categories">Categories</a>
+                    </div>
+                    
+                    <div tal:condition="python:request.has_permissions('Administrate')">
+                        <a href="${request.application_url}/admin">Data Scaffold</a>
+                    </div>
+                    
+                    <div>
+                        <a href="${request.application_url}/edit/leaderboard">Leaderboard</a>
+                    </div>
+                    
+                    <div tal:condition="python:request.has_permissions(['Administrate'])">
+                        <a href="${request.application_url}/edit/mailer">Mailer</a>
+                    </div>
+                                        
+                    <div>
+                        <a href="${request.application_url}/edit/info">Site Info</a>
+                    </div>
+                    
+                    <div tal:condition="python:request.has_permissions(['Administrate'])">
+                        <a href="${request.application_url}/edit/reports">Reports</a>
+                    </div>
+                    
+                    <div tal:condition="python:request.has_permissions(['Administrate'])">
+                        <a href="${request.application_url}/edit/theme">Themes</a>
+                    </div>
+                    
+                    <div tal:condition="python:request.has_permissions(['Administrate'])">
+                        <a href="${request.application_url}/edit/groups">Users &amp; Groups</a>
+                    </div>
+                    
+                    <br />
+                    
+                    <div>
+                        <a href="${request.application_url}">Back To Main Menu</a>
+                    </div>
+                </div>
+                <div class="clear"></div>
+            </div>
+            
+            <div id="edit-content">
+                <tal:block metal:define-slot="content" tal:content="nothing" />
+            </div>
+            
+            <div class="clear"></div>
+            
+            <div class="updates">
+                New Edit Features and Options are still being added.
+            </div>
+            
+        </div>  
+        
+        <br />
+        <br />
+        
+    </tal:block>
+</body>
+</html>

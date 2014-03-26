@@ -1,0 +1,15 @@
+Majority of the images where created by Joshua Ranger and David Hietpas
+
+Third Party Files:
+
+    ICONS
+    - http://search.creativecommons.org/ (female face icon) (male face icon)
+    - http://openclipart.org/detail/1646/female-user-icon-by-dagobert83
+    - http://openclipart.org/detail/4749/male-user-icon-by-acspike
+
+    Background
+     - http://lostandtaken.com/gallery
+        - Free Personal and Commericial Use.  No creditation to original author required.
+
+    Fonts
+    - http://openfontlibrary.org/

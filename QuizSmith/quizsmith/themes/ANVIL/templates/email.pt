@@ -1,0 +1,66 @@
+<metal:html 
+    xmlns:tal="http://xml.zope.org/namespaces/tal"
+    xmlns:metal="http://xml.zope.org/namespaces/metal"
+    use-macro="load: master.pt">
+    
+    <tal:block metal:fill-slot="title">
+        <title>Email - Trivia</title>
+    </tal:block>  
+
+    <tal:block metal:fill-slot="js">
+        <script type="text/javascript">
+            jq(document).ready(function(){
+                var help = 'john.smith@example.com , jane.smith@example.com';
+                
+                if(jq('#email-input').val() == '')
+                    jq('#email-input').val(help).addClass('example');
+                
+                // Clear input help text when selected
+                jq('#email-input').focus(function(){
+                    if (jq(this).val() == help) {   
+                        jq(this).val('');
+                        jq(this).removeClass('example');
+                        jq('#email-hidden').val('1');
+                    }
+                });
+                
+                // If deselected and no data entered refill the help text
+                jq('#email-input').blur(function(){
+                    if (jq.trim(jq(this).val()) == '') {   
+                        jq(this).val(help);
+                        jq(this).addClass('example');
+                        jq('#email-hidden').val('0');
+                    }
+                });
+            });
+        </script>
+    </tal:block>  
+
+    
+    <tal:block metal:fill-slot="content">
+        <div id="email">
+            <h4>Email PDF</h4>
+            
+            <iframe src="${request.application_url}/profile/pdf/${id}.pdf" width="600" height="300">
+            </iframe>
+            
+            <br />
+            <br />
+            
+            <form action="${request.application_url}/profile/email/${id}" method="post">
+                <label> Email Addresses
+                    <br />
+                    <input id="email-input" type="text" name="email.addresses" tal:attributes="value emails|nothing" size="60" class="example" />
+                    <input tal:condition="not:emails" id="email-hidden" type="hidden" name="email.ok" value="0" />
+                    <input tal:condition="emails" id="email-hidden" type="hidden" name="email.ok" value="1" />
+                </label>
+                <br />
+                <input class="link" type="submit" name="form.submitted" value="Email PDF" />
+                <br />
+                <br />
+                <a class="slink" href="${request.application_url}/profile/score/${id}">Go Back</a>
+            </form>
+        </div>
+    </tal:block>
+    
+</metal:html>

@@ -1,0 +1,105 @@
+<metal:html 
+    xmlns:tal="http://xml.zope.org/namespaces/tal"
+    xmlns:metal="http://xml.zope.org/namespaces/metal"
+    use-macro="load: edit-master.pt">
+    
+    
+    <tal:block metal:fill-slot="title">
+        <title>Edit - Trivia</title>
+    </tal:block>  
+    
+    <tal:block metal:fill-slot="js">
+        <script type="text/javascript">
+            jq(document).ready( function() {
+                Validators.confirm_message = 'Are you sure you want to make this change?';
+                Validators.setup();
+                
+                jq('select[name="edit.theme.download"]').change(function(){
+                    jq(this).parent().find('a').prop('href', '${request.application_url}/edit/theme/export/' +jq(this).val() + '.zip');
+                });
+                jq('select[name="edit.theme.download"]').trigger('change');
+                
+            });
+        </script>
+    </tal:block>  
+    
+    <tal:block metal:fill-slot="logo" content="nothing" />
+   
+    <tal:block metal:fill-slot="content">
+    
+        <div class="h3">Managing: Theme</div>
+        
+        <div class="edit-category">
+            
+            <form method="post" method="post" enctype="multipart/form-data">
+           
+                <div class="row">
+                    <h4>Current Theme: <i style="color: green;">${request.active_base_theme}</i></h4>
+                </div>
+           
+                <div class="row">
+                    <label>Choose a theme:</label>
+                    <select name="edit.theme.change">
+                        <tal:loop repeat="theme restricted_themes">
+                            <option value="${theme}" tal:attributes="selected python:request.active_base_theme==theme">${theme}</option>
+                        </tal:loop>
+                    </select>
+                    <input class="button validate-confirmation right" type="submit" value="Make this my theme" name="edit.theme.change.submit" />
+                    <div class="clear"></div>
+                    <br />
+                </div>
+                
+                <div class="row">
+                    <label>Get installed theme:</label>
+                    <select name="edit.theme.download">
+                        <tal:loop repeat="theme all_themes">
+                            <option value="${theme}">${theme}</option>
+                        </tal:loop>
+                    </select>
+                    <i>Download, customize, then upload the changes below!</i>
+                    <a class="button right" href="http://www.google.com">Download Theme</a>
+                    <div class="clear"></div>
+                    <br />
+                </div>
+                
+                <div class="row">
+                    <label>Add theme:</label>
+                    <input class="upload-box" type="file" name="edit.theme.upload" />
+                    <i>Themes with the same name will be overwritten</i>
+                    <input class="button right" type="submit" value="Upload Theme" name="edit.theme.upload.submit" />
+                    <div class="clear"></div>
+                    <br />
+                </div>
+                
+                <div class="row">
+                    <label>Remove theme:</label>
+                    <select name="edit.theme.remove">
+                        <tal:loop repeat="theme restricted_themes">
+                            <option value="${theme}" tal:condition="python:theme!=request.active_base_theme and theme!='Original'">${theme}</option>
+                        </tal:loop>
+                    </select>
+                    <i>You will not be able to remove the current active theme or Original</i>
+                    <input class="button validate-confirmation right" type="submit" value="Remove Theme" name="edit.theme.remove.submit" />
+                    <div class="clear"></div>
+                    <br />
+                </div>
+                
+                <div class="row end">
+                    <label>Theming Help</label>
+                    <ul>
+                        <li>Uploading and Replacing old themes will require a browser refresh to pick up changed images and possible other files <i>(css and js)</i></li>
+                        <li>When zipping up a theme for upload, the zip filename will become the name of the theme.</li>
+                        <li>When zipping up a theme for upload, make sure the files immediatly under the zip.</li>
+                        <li class="sub"><i>Correct Example: &nbsp;&nbsp; MyTheme.zip > your_theme_files</i></li>
+                        <li class="sub"><i>Incorrect Example: &nbsp;&nbsp; MyTheme.zip > MyTheme > your_theme_files</i></li>
+                    </ul>
+                    <br />
+                </div>
+                
+                
+            </form>
+        </div>
+        
+    </tal:block>
+    
+</metal:html>

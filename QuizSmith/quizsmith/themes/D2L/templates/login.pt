@@ -1,0 +1,111 @@
+<metal:html 
+    xmlns:tal="http://xml.zope.org/namespaces/tal"
+    xmlns:metal="http://xml.zope.org/namespaces/metal"
+    use-macro="load: ../../${request.active_base_theme}/templates/master.pt">
+    
+    <tal:block metal:fill-slot="title">
+        <title>Login - Trivia</title>
+    </tal:block>  
+
+    <tal:block metal:fill-slot="js">
+        <script type="text/javascript">
+            jq(document).ready(function(){
+            
+                function lock() {
+                    jq('.step_two .locked').css({'display':'block'});
+                    jq('.step_two .unlocked').css({'display':'none'});
+                }
+                function unlock() {
+                    jq('.step_two .locked').css({'display':'none'});
+                    jq('.step_two .unlocked').css({'display':'block'});
+                }
+                
+                lock();
+                jq('.step_one > a').addClass('boldme');
+                jq('.step_one > a').click(function(){
+                    unlock();
+                    jq('.step_one > a').removeClass('boldme');
+                    jq('.steps.step_one').removeClass('active');
+                    jq('.step_two > a').addClass('boldme');
+                    jq('.steps.step_two').addClass('active');
+                });
+                
+                jq('.switch > a').click(function(){
+                    if (jq('.switch > a').hasClass('active')) {
+                        jq('.step_one > a').prop('href', 'https://uwosh.courses.wisconsin.edu/Shibboleth.sso/Login?target=https://uwosh.courses.wisconsin.edu/d2l/shibbolethSSO/deepLinkLogin.d2l');
+                        jq('.switch > a').removeClass('active');
+                    }
+                    else{
+                        jq('.switch > a').addClass('active');
+                        jq('.step_one > a').prop('href', 'https://uwosh.courses.wisconsin.edu/');
+                    }
+                        
+                });
+                
+            });
+        </script>
+    </tal:block>
+    
+    <tal:block metal:fill-slot="css">
+        <style>
+            .locked {
+                color: gray;
+                display: none;
+                font-style: italic;
+            }
+            .unlocked {
+                display: block;
+            }
+            .boldme {
+                font-weight: bold;
+            }
+            .steps.active {
+                background-color: khaki;
+                border-radius: 10px;
+            }
+            .switch {
+                bottom: 10px;
+                position: absolute;
+                right: 10px;
+            }
+            .switch a { cursor: pointer; font-size: 10px; }
+            .switch a.active { color: green; }
+            .switch a > span { display: none; }
+            .switch a.active > span { display: inline; }
+        </style>
+    </tal:block>
+    
+    <tal:block metal:fill-slot="content">
+        
+        <div id="login">
+            <h4>Login</h4>
+            <div>
+                <b>This application uses D2L verification.</b> 
+            </div>
+            
+            <br />
+            
+            <div class="steps step_one active">
+                <b>Step 1</b>
+                <br />
+                <a onclick="window.open(this.href, 'Upload','left=20,top=20,width=680,height=500,toolbar=1,resizable=0'); return false;"
+                   href="https://uwosh.courses.wisconsin.edu/Shibboleth.sso/Login?target=https://uwosh.courses.wisconsin.edu/d2l/shibbolethSSO/deepLinkLogin.d2l">Click Here to log into window.</a>
+            </div>
+            
+            <br />
+            
+            <div class="steps step_two">
+                <b>Step 2</b>
+                <br />
+                <span class="locked">Once logged into D2L in the window. <br /> Click Here.</span>
+                <a tal:condition="not:category" class="unlocked" href="${request.application_url}/d2l/login">Once logged into D2L in the window. <br /> Click Here.</a>
+                <a tal:condition="category" class="unlocked" href="${request.application_url}/d2l/login?category=${category}">Once logged into D2L in the window. <br /> Click Here.</a>
+            </div>
+        </div>
+        <div class="switch">
+            <a title="Only for librarians"><span>Active: </span>D2L Classic</a>
+        </div>
+        
+    </tal:block>
+    
+</metal:html>

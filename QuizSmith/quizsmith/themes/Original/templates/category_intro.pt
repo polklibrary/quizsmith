@@ -1,0 +1,34 @@
+<metal:html 
+    xmlns:tal="http://xml.zope.org/namespaces/tal"
+    xmlns:metal="http://xml.zope.org/namespaces/metal"
+    use-macro="load: master.pt">
+    
+    <tal:block metal:fill-slot="title">
+        <title>Intro - Trivia</title>
+    </tal:block>  
+    
+    <tal:block metal:fill-slot="content">
+    
+        <div id="category-intro">
+            <h2 tal:content="category.name" />
+            <div tal:content="structure category.category_intro">
+                Intro Goes Here
+            </div>
+            
+            <br />
+            
+            <div class="links">
+                <a class="link" href="${request.application_url}/category/${category.id}/playing">Play Game</a>
+                <a class="link" href="${request.application_url}/category">Change Category</a>
+                <a class="link" href="${request.application_url}">Main Menu</a>
+            </div>
+            
+            <br />
+            <br />
+            <br />
+            
+        </div>
+    
+    </tal:block>
+    
+</metal:html>

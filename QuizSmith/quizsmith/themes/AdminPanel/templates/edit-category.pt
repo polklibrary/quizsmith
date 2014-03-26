@@ -1,0 +1,243 @@
+<metal:html 
+    xmlns:tal="http://xml.zope.org/namespaces/tal"
+    xmlns:metal="http://xml.zope.org/namespaces/metal"
+    use-macro="load: edit-master.pt">
+    
+    
+    <tal:block metal:fill-slot="title">
+        <title>Edit - Trivia</title>
+    </tal:block>  
+    
+    <tal:block metal:fill-slot="js">
+        <script type="text/javascript">
+            jq(document).ready( function() {
+                Validators.confirm_message = 'Are you sure you want to delete this? Any changes will be lost please save first.';
+                Validators.setup();
+                
+                var new_assessment = 1;
+                
+                var selection = function(name) {
+                    var select = jq('<select>').prop({'name':'assessment.' + name + '.' + new_assessment});
+                    for(var i = 0; i < 101; i++)
+                        jq(select).append( jq('<option>').prop('value',i).html(i) );
+                    return select;
+                }
+                
+                jq('#add_new_assessment').click(function(){
+                    var div = jq('<div>');
+                    var input = jq('<input>').prop({'type':'text','size':'75','name':'assessment.text.'+new_assessment});
+                    var rem = jq('<input>').prop({'class':'button validate-confirmation'}).prop({'value':'Remove','type':'button'}).click(function(){
+                        jq(this).parent().remove()
+                    });
+                    
+                    jq(div).append(selection('start'));
+                    jq(div).append(jq('<b>').html(' % &nbsp; to '));
+                    jq(div).append(selection('end'));
+                    jq(div).append(jq('<b>').html(' % &nbsp;&nbsp;'));
+                    jq(div).append(input);
+                    jq(div).append('&nbsp;');
+                    jq(div).append(rem);
+                    jq('#assessments-added').append(div);
+                    
+                    new_assessment++;
+                });
+                
+                jq('.remove-assessments').click(function(){
+                    jq(this).parent().remove();
+                });
+                
+            });
+        </script>
+    </tal:block>  
+    
+    <tal:block metal:fill-slot="logo" content="nothing" />
+    
+    <tal:block metal:fill-slot="content">
+    
+        <div class="h3">Managing: ${active_category.name}</div>
+        
+        <div class="edit-category">
+
+            <form action="${request.application_url}/edit/category/${category_id}" method="post">
+            
+                <div class="options">
+                    <a class="button" href="${request.application_url}/edit/category/${active_category.id}/questions">Manage Question</a>
+                    <a class="button validate-confirmation" href="${request.application_url}/edit/delete/Categories/${active_category.id}?back=${request.application_url}/edit">Delete</a>
+                    <a class="button" href="${request.application_url}/edit/category/${active_category.id}/export/${active_category.name}-v${version}.zip">
+                        Export
+                    </a>
+                </div>
+            
+                <div class="row">
+                    <h4>Category name</h4>
+                    <input type="text" name="category.name" size="100" value="${active_category.name}"/>
+                    <br /><br />
+                    
+                    <h4>Category introduction</h4> 
+                    <textarea id="mceEditor" name="category.intro">${active_category.category_intro}</textarea>
+                    <script type="text/javascript"> jq(document).ready(function(){ tinyMCE.execCommand('mceAddControl', false, 'mceEditor'); }); </script>
+                    <br /><br />
+                </div>
+                
+                <div class="row">
+                    <h4>Playable questions</h4>
+                    <input size="2" type="text" name="category.playable_questions" value="${active_category.playable_questions}"/> questions
+                    <br /><br />
+                    
+                    <h4>Time penalty for answering wrong</h4>
+                    <input size="2" type="text" name="category.wrong_answer_time_penalty" value="${active_category.wrong_answer_time_penalty}"/> seconds
+                    <br /><br />
+                    
+                    <h4>How many attempts allowed to answer a question?</h4>
+                    <input size="2" type="text" name="category.max_wrong_answer_allowed" value="${active_category.max_wrong_answer_allowed}"/> attempt(s)
+                    <br /><br />
+                    
+                    <h4>Question time limit</h4>
+                    <input size="2" type="text" name="category.question_time_allowed" value="${active_category.question_time_allowed}"/> seconds
+                    <br /><br />
+                    
+                    <h4>Question transition in</h4>
+                    <select name="category.transition_in">
+                        <tal:block repeat="transition transitions">
+                            <tal:block define="selected python: (transition.id == transitions_in)">
+                                <option value="${transition.id}" selected="${selected}">${transition.name}</option> 
+                            </tal:block>
+                        </tal:block>
+                    </select> effect
+                    <br /><br />
+                    
+                    <h4>Question transition out</h4>
+                    <select name="category.transition_out">
+                        <tal:block repeat="transition transitions">
+                            <tal:block define="selected python: (transition.id == transitions_out)">
+                                <option value="${transition.id}" selected="${selected}">${transition.name}</option>
+                            </tal:block>
+                        </tal:block>
+                    </select> effect
+                    <br /><br />
+                    
+                    <tal:block condition="d2l_on">
+                        <h4>D2L folder name <span class="note">(Must exactly match the folder name in D2L!)</span></h4>
+                        <input type="text" name="category.d2l_folder" size="100" value="${active_category.d2l_folder}"/>
+                        <br /><br />
+                    </tal:block>
+                    
+                </div>
+                
+                 <div class="row">
+                    <h4>Assessment ranges</h4>
+                    <tal:block repeat="assessment active_category.get_assessments">
+                    <div>
+                        <select name="assessment.start.${assessment.start}-${assessment.end}">
+                            <tal:loop repeat="i python:range(0,101)">
+                                <option value="${i}" tal:attributes="selected python:assessment.start==i">${i}</option>
+                            </tal:loop>
+                        </select>
+                        <b>% &nbsp; to</b>
+                        <select name="assessment.end.${assessment.start}-${assessment.end}">
+                            <tal:loop repeat="i python:range(0,101)">
+                                <option value="${i}" tal:attributes="selected python:assessment.end==i">${i}</option>
+                            </tal:loop>
+                        </select>
+                        <b>%&nbsp;&nbsp;</b>
+                        <input type="text" name="assessment.text.${assessment.start}-${assessment.end}" size="75" value="${assessment.text}" />
+                        <input type="button" class="remove-assessments button validate-confirmation" value="Remove" />
+                    </div>
+                    </tal:block>
+                    <div id="assessments-added"></div>
+                    <br />
+                    <div>
+                        <input id="add_new_assessment" class="button" type="button" value="Add Assessment Range" name="add" />
+                    </div>
+                </div>
+                
+                <div class="row playable">
+                    <h4>Which groups can play?</h4>
+                    <select name="category.playable" multiple="true" tal:attributes="size python:len(all_play_groups)">
+                        <tal:block repeat="group all_play_groups">
+                            <tal:block define="selected python: (group.name in play_groups)">
+                                <option value="${group.id}" selected="${selected}">${group.name}</option>
+                            </tal:block>
+                        </tal:block>
+                    </select>
+                    <div>
+                        <ul>
+                            <li>Administrator and Global Editors can't be removed.</li>
+                            <li>Anyone <u>SELECTED</u> will immediately be able to play. </li>
+                        </ul>
+                    </div>
+                    <p class="clear"></p>
+                </div>
+                
+                <div class="row playable" tal:condition="python:request.has_permissions(['Administrate'])">
+                    <h4>Which groups can edit?</h4>
+                    <select name="category.editable" multiple="true" tal:attributes="size python:len(all_edit_groups)">
+                        <tal:block repeat="group all_edit_groups">
+                            <tal:block define="selected python: (group.name in edit_groups);">
+                                <option value="${group.id}" selected="${selected}">${group.name}</option>
+                            </tal:block>
+                        </tal:block>
+                    </select>
+                    <div>
+                        <ul>
+                            <li>Administrator and Global Editors can't be removed.</li>
+                        </ul>
+                        
+                    </div>
+                    <p class="clear"></p>
+                </div>
+                <div class="row playable" tal:condition="python:not request.has_permissions(['Administrate'])">
+                    <h4>Which groups can edit? <span class="note">(Only Administrators can adjust edit level permissions)</span></h4>
+                    <select disabled="true" tal:attributes="size python:len(all_edit_groups)">
+                        <tal:block repeat="group all_edit_groups">
+                            <tal:block define="selected python: (group.name in edit_groups);">
+                                <option value="${group.id}" selected="${selected}">${group.name}</option>
+                            </tal:block>
+                        </tal:block>
+                    </select>
+                    <p class="clear"></p>
+                </div>
+                
+                <div class="row playable" tal:condition="python:request.has_permissions(['Administrate'])">
+                    <h4>Which groups can review?</h4>
+                    <select name="category.reviewable" multiple="true" tal:attributes="size python:len(all_review_groups)">
+                        <tal:block repeat="group all_review_groups">
+                            <tal:block define="selected python: (group.name in review_groups);">
+                                <option value="${group.id}" selected="${selected}">${group.name}</option>
+                            </tal:block>
+                        </tal:block>
+                    </select>
+                    <div>
+                        <ul>
+                            <li>Administrator can't be removed.</li>
+                        </ul>
+                        
+                    </div>
+                    <p class="clear"></p>
+                </div>
+                <div class="row playable" tal:condition="python:not request.has_permissions(['Administrate'])">
+                    <h4>Which groups can review? <span class="note">(Only Administrators can adjust edit level permissions)</span></h4>
+                    <select disabled="true" tal:attributes="size python:len(all_review_groups)">
+                        <tal:block repeat="group all_review_groups">
+                            <tal:block define="selected python: (group.name in review_groups);">
+                                <option value="${group.id}" selected="${selected}">${group.name}</option>
+                            </tal:block>
+                        </tal:block>
+                    </select>
+                    <p class="clear"></p>
+                </div>
+                
+                <div class="options nb">
+                    <input class="button" type="submit" value="Save" name="form.submit"/>
+                    <input class="button" type="submit" value="Save and Go To Questions" name="form.submit.questions"/>
+                    <a class="button" href="${request.application_url}/edit">Cancel</a>
+                </div>
+                
+            </form>
+
+   
+        </div>
+        
+    </tal:block>
+    
+</metal:html>

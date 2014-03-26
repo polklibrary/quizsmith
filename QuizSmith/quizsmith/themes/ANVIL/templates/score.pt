@@ -1,0 +1,160 @@
+<metal:html 
+    xmlns:tal="http://xml.zope.org/namespaces/tal"
+    xmlns:metal="http://xml.zope.org/namespaces/metal"
+    use-macro="load: master.pt">
+    
+    <tal:block metal:fill-slot="title">
+        <title>Score - Trivia : ${test.category}</title>
+    </tal:block>  
+    
+    <tal:block metal:fill-slot="logo"></tal:block>  
+    
+    <tal:block metal:fill-slot="js">
+        <script type="text/javascript" src="${request.application_url}/themes/ANVIL/jquery.simpletip-1.3.1.min.js"></script>
+        <script type="text/javascript">
+            jq(document).ready(function(){
+                jq('.add-stooltip').each(function(i,t){ 
+                    jq(t).stop().simpletip({
+                        'baseClass': 'stooltip',
+                        'content': jq(t).find('.stooltip').html(),
+                        'fixed': false,
+                        'showTime': 50,
+                        'hideTime': 50,
+                        'offset': [20,20]
+                    });
+                });
+                
+                jq("a[href='#top']").click(function() {
+                    jq("html, body").animate({ scrollTop: 0 }, "fast");
+                    return false;
+                });
+                
+            });
+        </script>
+    </tal:block>  
+    
+    <tal:block metal:fill-slot="content">
+        
+        <a name="top"></a>
+                
+        <div id="score">
+
+            <div class="heading">
+                <h2 class="rivets">${test.category}</h2>
+            </div>
+        
+            <div id="overall">
+                <div id="scores" class="left">
+                    
+                <h2 class="rivets">Your Results</h2>
+                    <div>Final Score</div>
+                    <div class="score highlight">${test.percentage}%</div>
+                    <div>Time Taken</div>
+                    <div class="score highlight">${test_total_time}</div>
+                    <div>Leaderboard Score</div>
+                    <div class="score">
+                        <span class="highlight">${test.total_competitive} Points</span>
+                    </div>
+                </div>
+                
+                <div id="assessment" class="right">
+                    <div class="label" tal:condition="librarian">Librarian <a href="${request.application_url}/help">Need Help?</a></div>
+                    <div class="label" tal:condition="not:librarian">Librarian <a href="${request.application_url}/help">Need Help?</a></div>
+                    <div class="librarian" tal:condition="librarian"><img src="${request.application_url}/themes/ANVIL/images/mlibrarian.png" alt="" /></div>
+                    <div class="librarian" tal:condition="not:librarian"><img src="${request.application_url}/themes/ANVIL/images/flibrarian.png" alt="" /></div>
+                    <img class="bubble" src="${request.application_url}/themes/ANVIL/images/bubble.png" alt="" />
+                    <div class="assessment">${assessment.text}</div>
+                </div>
+                <div class="clear"></div>
+                
+            </div>
+            
+            <br />
+            
+            <div id="score-options">
+                <div class="left">
+                    <a tal:condition="python:request.user.show_d2l_options()" 
+                        target="_blank" onclick="window.open(this.href, 'Upload','left=20,top=20,width=600,height=500,toolbar=1,resizable=0'); return false;"
+                        class="slink" href="${request.application_url}/d2l/dropbox/${test.id}">D2L Dropbox the Results</a>
+                    <a class="slink" href="${request.application_url}/profile/pdf/${test.id}.pdf">Print the Results</a>
+                    <a class="slink" href="${request.application_url}/profile/email/${test.id}">Email the Results</a>
+                </div>
+                
+                <div class="right">
+                    <tal:block condition="category">
+                        <a class="slink" href="${request.application_url}/category/${category.id}/playing">Play Again?</a>
+                    </tal:block>
+                    <a class="slink" href="${request.application_url}/profile?category=${test.category}">Your Past Scores</a>
+                    <a class="slink" href="${request.application_url}">Main Menu</a>
+                </div>
+                <div class="clear"></div>
+            </div>
+            
+            <br />
+            
+            <div class="tcenter">
+                <h2 class="rivets">Questions</h2>
+            </div>
+            <tal:loop repeat="result results">
+                
+                <div class="result">
+                
+                    <tal:block condition="python: result.percentage>99.9">
+                        <img tal:condition="python: result.percentage>99.9" src="${request.application_url}/themes/ANVIL/images/correct.png" alt="Correct" />
+                        <label class="correct">${result.percentage}% - Correct</label>
+                    </tal:block>
+                    
+                    <tal:block condition="python: result.percentage>0.1 and result.percentage<99.9">
+                        <img src="${request.application_url}/themes/ANVIL/images/half.png" alt="Needs Improvement" />
+                        <label class="half">${result.percentage}% - Needs Improvement</label>
+                    </tal:block>
+                    
+                    <tal:block condition="python: test.max_wrong_answer_allowed == result.wrong_attempts">
+                        <img src="${request.application_url}/themes/ANVIL/images/wrong.png" alt="Wrong" />
+                        <label class="wrong">0.0% - Wrong</label>
+                    </tal:block>
+                                            
+                    <tal:block condition="python: result.percentage<99.9 and test.max_wrong_answer_allowed > result.wrong_attempts and result.duration == 0 and result.attempted">
+                        <img src="${request.application_url}/themes/ANVIL/images/wrong.png" alt="Out of time" />
+                        <label class="wrong">0.0% - Out of time</label>
+                    </tal:block>
+                    
+                    <tal:block condition="python: result.percentage < 0.1 and not result.attempted">
+                        <img src="${request.application_url}/themes/ANVIL/images/wrong.png" alt="Incomplete" />
+                        <label class="wrong">0.0% - Incomplete</label>
+                    </tal:block>
+                    
+                    <div class="spacer"></div>
+                
+                    <label class="question-num" >
+                        <span tal:replace="python: repeat['result'].number" />)
+                    </label>
+                    <div class="question" tal:content="structure result.question"></div>
+                    
+                    <div class="answers" tal:on-error="nothing">
+                        <tal:block repeat="answer result.answer_choices">
+                            <div class="correct" tal:condition="python:answer['answered']==1" tal:content="answer.content"></div>
+                            <div class="wrong" tal:condition="python:answer['answered']==-1" tal:content="answer.content"></div>
+                            <div tal:condition="python:answer['answered']==0" tal:content="answer.content"></div>
+                        </tal:block>
+                    </div>
+
+                    <div class="clear"></div>
+                </div>
+                
+            </tal:loop>
+            
+        </div>
+        
+        <br />
+        
+        <div class="score-options">
+            <a href="#top">To Top</a>
+            <br />
+            <br />
+            <a style="font-weight: normal;" href="${request.application_url}/help">Need Help?</a>
+        </div>
+       
+    </tal:block>
+    
+</metal:html>

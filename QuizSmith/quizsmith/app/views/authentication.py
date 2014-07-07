@@ -22,7 +22,8 @@ from quizsmith.app.models import Users,DBSession
 from quizsmith.app.views import BaseView
 from quizsmith.app.utilities import ACL,Validate
 import transaction, datetime, types
-
+import logging
+log = logging.getLogger("QuizSmith")
         
 class Authentication(BaseView):
 
@@ -49,7 +50,7 @@ class Authentication(BaseView):
             if user and user.validate_password(self.request.params['password']):
                 user = Users.login_updates(user);
                 return HTTPFound(location=route_url('alias', self.request), headers=remember(self.request, user.id))
-            self.response['message'] = 'Please check your username or password'
+            self.notify('Please check your username or password!',warn=True)
         return self.template('login.pt')
 
     @view_config(route_name='logout')
@@ -74,16 +75,16 @@ class Authentication(BaseView):
             repassword = Validate.sanatize(self.request.params['re.password'])
             
             if Users.by({'email':self.response['email']}).first():
-                self.response['message'] = "Email already in use"
+                self.notify('Email already in use!',warn=True)
                 return self.template('register.pt')
             if not Validate.email(self.response['email']):
-                self.response['message'] = "Not a valid email address"
+                self.notify('Not a valid email address!',warn=True)
                 return self.template('register.pt')
             if not Validate.password(password):
-                self.response['message'] = "Improper password."
+                self.notify('Improper password!',warn=True)
                 return self.template('register.pt')
             if repassword != password:
-                self.response['message'] = "Passwords do not match."
+                self.notify('Passwords do not match!',warn=True)
                 return self.template('register.pt')
                 
             # Below is good
@@ -104,10 +105,10 @@ class Authentication(BaseView):
             recheck = Validate.sanatize(self.request.params['new_recheck_password'])
             
             if not Validate.password(new):
-                self.response['message'] = "Improper new password."
+                self.notify('Improper new password!',warn=True)
                 return self.template('change_password.pt')
             if recheck != new:
-                self.response['message'] = "New passwords do not match."
+                self.notify('New passwords do not match!',warn=True)
                 return self.template('change_password.pt')
             
             if user.validate_password(old):
@@ -122,15 +123,22 @@ class Authentication(BaseView):
     
     @view_config(context=HTTPForbidden)
     def unauthorized(self):
-        self.response['message'] = "You do not have permissions to view this page. Please Login."
+        self.notify('You do not have permissions to view this page. Please Login.',warn=True)
         return self.template('halt.pt',status=403)
 
     @view_config(context=HTTPNotFound)
     def not_found(self):
         self.request.response.status = 404
-        self.response['message'] = "Page not found."
+        self.notify('Page not found.',warn=True)
         return self.template('halt.pt',status=404)
 
+    @view_config(context=Exception)
+    def error_view(self):
+        log.error("The error was: %s" % self.context, exc_info=(self.context))
+        log.error(" -- More information on error above: \n%s" % self.request.errors)
+        self.request.response.status = 500
+        self.notify('An error occured and was logged.',warn=True)
+        return self.template('halt.pt',status=500)
         
 Authentication.register_login_layer(Authentication.local_login)
 

@@ -1,0 +1,153 @@
+<metal:html 
+    xmlns:tal="http://xml.zope.org/namespaces/tal"
+    xmlns:metal="http://xml.zope.org/namespaces/metal"
+    use-macro="load: master.pt">
+    
+    <tal:block metal:fill-slot="css">
+        <style>
+            body {
+                width: 1000px;
+            }
+            #accessible {
+                font-family: Arial, Helvetica, sans-serif;
+            }
+            #accessible img {
+                max-width: 600px;
+            }
+            #accessible.wb > div {
+                background-color: white;
+                margin: 20px auto;
+                padding: 20px;
+                width: 800px;
+            }
+            #accessible.wb > div.last {
+                background-color: transparent;;
+                border: 0px none;
+                text-align: center;
+            }
+            #accessible.wb > div span.number {
+                font-size: 20px;
+                font-weight: bold;
+            }
+            #accessible.wb > div span.question {
+                font-size: 18px;
+                font-weight: bold;
+            }
+            #accessible.wb > div label {
+                font-size: 16px;
+                font-weight: normal;
+                margin-left: 20px;
+            }
+            #accessible.bw > div {
+                background-color: black;
+                color: white;
+                margin: 20px auto;
+                padding: 20px;
+                width: 800px;
+            }
+            #accessible.bw > div.last {
+                background-color: transparent;;
+                border: 0px none;
+                text-align: center;
+            }
+            #accessible.bw > div span.number {
+                font-size: 20px;
+                font-weight: bold;
+            }
+            #accessible.bw > div span.question {
+                font-size: 18px;
+                font-weight: bold;
+            }
+            #accessible.bw > div label {
+                font-size: 16px;
+                font-weight: normal;
+                margin-left: 20px;
+            }
+            .inverter {
+                background-color: #dddddd;
+                border: 1px solid #333333;
+                border-radius: 5px;
+                margin: 20px auto;
+                padding: 2px 5px;
+                text-align: center;
+                width: 400px;
+            }
+            .inverter .head {
+                font-weight: bold;
+            }
+            #wb, #bw {
+                cursor: pointer;
+            }
+            #wb:hover, #bw:hover {
+                text-decoration: underline;
+            }
+        </style>
+    </tal:block> 
+    
+    <tal:block metal:fill-slot="js">
+        <script>
+            jq(document).ready(function(){
+                jq('#wb').click(function(){
+                    jq('#accessible').removeClass('bw');
+                    jq('#accessible').addClass('wb');
+                });
+                jq('#bw').click(function(){
+                    jq('#accessible').removeClass('wb');
+                    jq('#accessible').addClass('bw');
+                });
+            });
+        </script>
+    </tal:block> 
+    
+    <tal:block metal:fill-slot="title">
+        <title>Playing - Trivia</title>
+    </tal:block>  
+    
+    
+    <tal:block metal:fill-slot="content">
+        
+        <div class="inverter">
+            <span class="head">Invert Question Color:</span>
+            <span id="wb">White/Black</span>
+            or
+            <span id="bw">Black/White</span>
+        </div>
+        
+        <form id="accessible" class="wb">
+        
+            <div tal:repeat="result results">
+                
+                <div>
+                    <span class="number" tal:content="repeat.result.number" />. &nbsp;
+                    <span class="question" tal:content="structure result.question_set.question" />
+                </div>
+                
+                <br />
+                
+                <tal:loop repeat="answer result.answer">
+                    <label>
+                        <input type="radio" name="question.${result.question_set.id}" value="${answer.id}" />
+                        ${answer.content}
+                    </label>
+                    <br />
+                </tal:loop>
+                
+                <br />
+                
+            </div>
+            
+            <div class="last">
+                <input class="slink" type="submit" name="form.submit" value="Submit" />
+                <input type="hidden" name="st" value="${time_started}" />
+                <input type="hidden" name="nojs" value="1" />
+            </div>
+            
+            <br />
+            <br />
+            <br />
+        
+        </form>
+        
+    </tal:block>
+    
+</metal:html>

@@ -52,6 +52,7 @@ class EditView(EditBaseView):
             self.response['wrong_answers'] = wa
             self.response['correct_answer'] = ca
             if 'form.submit' in self.request.params or 'form.submit.next' in self.request.params:
+                self.notify('Changes saved!')
                 self._transaction(qs, self.request.params)
                 if 'form.submit.next' in self.request.params:
                     return HTTPFound(location=self.request.application_url + self.request.path + '/../new')

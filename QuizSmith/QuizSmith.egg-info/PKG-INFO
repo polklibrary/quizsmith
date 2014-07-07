@@ -1,14 +1,17 @@
 Metadata-Version: 1.1
 Name: QuizSmith
-Version: 0.0.1
+Version: 1.0.0
 Summary: QuizSmith
-Home-page: UNKNOWN
-Author: UNKNOWN
-Author-email: UNKNOWN
+Home-page: http://www.uwosh.edu/library/quizsmith
+Author: David Hietpas
+Author-email: hietpasd@uwosh.edu
 License: UNKNOWN
 Description: QuizSmith README
-        ==================
-        See http://www.uwosh.edu/library/quizsmith
+        ================
+        Author: David Hietpas
+        Email: hietpasd@uwosh.edu
+        
+        For more information see http://www.uwosh.edu/library/quizsmith
         
         
         1.0.0
@@ -16,7 +19,7 @@ Description: QuizSmith README
         
         -  Production Release
         
-Keywords: web wsgi bfg pylons pyramid
+Keywords: Quiz Education Trivia BarTrivia Bar Assessment Fun
 Platform: UNKNOWN
 Classifier: Programming Language :: Python
 Classifier: Framework :: Pylons

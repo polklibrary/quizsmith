@@ -14,13 +14,14 @@
 #   limitations under the License.
 #
 
+from operator import itemgetter
 from pyramid.response import Response
 from pyramid.view import view_config
 from quizsmith.app.models import Properties
 from quizsmith.app.utilities import ACL
 from quizsmith.admin import EditBaseView
 
-import transaction
+import transaction,json
 
 class EditView(EditBaseView):
 
@@ -30,12 +31,37 @@ class EditView(EditBaseView):
         if 'edit.leaderboard.submit' in self.request.params:
             archive_date = Properties.by({'prop_name':'LEADERBOARD_ARCHIVE_DATE'}).first()
             archive_date.prop_value = self.request.params.get('edit.leaderboard.archive_date','2013-1-1')
+            hall_of_fame = Properties.by({'prop_name':'LEADERBOARD_HOF'}).first()
+            
+            results = []
+            for sections in range(int(self.request.params.get('hofs_sections',0))):
+                s = str(sections)
+                data = {'title':self.request.params.get('hofs_' + s + '_title',''),
+                        'index':int(self.request.params.get('hofs_' + s + '_index','0')),
+                        'players':[]}
+                
+                for rows in range(int(self.request.params.get('hofs_' + s + '_rows',0))):
+                    r = str(rows)
+                    pdata = {'name':self.request.params.get('hofs_' + s + '_' + r + '_name',''),
+                             'score':self.request.params.get('hofs_' + s + '_' + r + '_score',''),
+                             'index':rows}
+                    data['players'].append(pdata)
+                data['players'] = sorted(data['players'],key=itemgetter('index'))
+                results.append(data)
+            results = sorted(results,key=itemgetter('index'))
+               
+            hall_of_fame.prop_value = json.dumps(results)
             transaction.commit()
-            self.response['message'] = "Leaderboard Settings Changed"
-            self.response['message_class'] = "info"
+            self.notify('Changes saved!')
         
-        self.response['leaderboard'] = {'archive_date': Properties.get('LEADERBOARD_ARCHIVE_DATE','2013-1-1'),
-                                        }
+        self.response['leaderboard'] = {'archive_date': Properties.get('LEADERBOARD_ARCHIVE_DATE','2013-1-1')}
+        self.response['hofs'] = json.loads(Properties.get('LEADERBOARD_HOF','[]'))
         
         return self.template('/edit-leaderboard.pt', theme='AdminPanel')
 
+
+        
+        
+        
+        
+        

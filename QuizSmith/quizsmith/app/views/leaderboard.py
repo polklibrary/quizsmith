@@ -20,7 +20,7 @@ from pyramid.url import route_url
 from quizsmith.app.views import BaseView
 from quizsmith.app.utilities import ACL,Result2Dict,Seconds2Str
 from quizsmith.app.models import DBSession,Tests,Users,Properties
-import datetime, math, time, urllib2
+import datetime, math, time, urllib2, json
 
 class LeaderBoard(BaseView):
 
@@ -99,6 +99,7 @@ class LeaderBoard(BaseView):
         
     @view_config(route_name='leaderboard_top_scores', permission=ACL.ANONYMOUS)
     def leaderboard_top_scores(self):
+        self.response['hofs'] = json.loads(Properties.get('LEADERBOARD_HOF','[]'))
         return self.template('leaderboard_top.pt')
         
         

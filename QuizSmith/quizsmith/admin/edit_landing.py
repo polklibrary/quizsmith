@@ -33,6 +33,7 @@ class EditView(EditBaseView):
                     c.position = v;
                     DBSession.flush()
             transaction.commit()
+            self.notify('Changes saved!')
             return HTTPFound(location=self.request.application_url + '/edit')
         return self.template('/edit-home.pt', theme='AdminPanel')
         

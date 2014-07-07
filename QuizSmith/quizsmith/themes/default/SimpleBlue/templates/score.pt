@@ -1,0 +1,156 @@
+<metal:html 
+    xmlns:tal="http://xml.zope.org/namespaces/tal"
+    xmlns:metal="http://xml.zope.org/namespaces/metal"
+    use-macro="load: master.pt">
+    
+    <tal:block metal:fill-slot="title">
+        <title>Score - Trivia : ${test.category}</title>
+    </tal:block>  
+    
+    <tal:block metal:fill-slot="logo"></tal:block>  
+    
+    <tal:block metal:fill-slot="js">
+        <script type="text/javascript" src="${request.application_url}/themes/${instance_id}/SimpleBlue/jquery.simpletip-1.3.1.min.js"></script>
+        <script type="text/javascript">
+            jq(document).ready(function(){
+                jq('.add-stooltip').each(function(i,t){ 
+                    jq(t).stop().simpletip({
+                        'baseClass': 'stooltip',
+                        'content': jq(t).find('.stooltip').html(),
+                        'fixed': false,
+                        'showTime': 50,
+                        'hideTime': 50,
+                        'offset': [20,20]
+                    });
+                });
+                
+                jq("a[href='#top']").click(function() {
+                    jq("html, body").animate({ scrollTop: 0 }, "fast");
+                    return false;
+                });
+                
+            });
+        </script>
+    </tal:block>  
+    
+    <tal:block metal:fill-slot="content">
+        
+        <a name="top"></a>
+        <div class="score-options">
+            <a class="link" href="${request.application_url}/profile/pdf/${test.id}.pdf">Print Results</a>
+            <a class="link" href="${request.application_url}/profile/email/${test.id}">Email Results</a>
+            <a tal:condition="not:request.user.is_local" 
+                target="_blank" onclick="window.open(this.href, 'Upload','left=20,top=20,width=600,height=500,toolbar=1,resizable=0'); return false;"
+                class="link" href="${request.application_url}/d2l/dropbox/${test.id}">Send Results D2L Dropbox</a>
+        </div>
+        <div class="score-options">
+            <tal:block condition="category">
+                <a class="link" href="${request.application_url}/category/${category.id}/playing">Play Again?</a>
+            </tal:block>
+            <a class="link" href="${request.application_url}/leaderboard?category=${test.category}">View Leaderboard</a>
+            <a class="link" href="${request.application_url}/profile?category=${test.category}">Your Past Scores</a>
+            <a class="link" href="${request.application_url}">Main Menu</a>
+        </div>
+        
+        <div id="score">
+
+            <h2>${test.category}</h2>
+            <h3>Your Results</h3>
+        
+            <div id="overall">
+                <div id="scores" class="left">
+                    <div>Final Score</div>
+                    <div class="score highlight">${test.percentage}%</div>
+                    <div>Total Time</div>
+                    <div class="score highlight">${test_total_time}</div>
+                    <div>Leaderboard Score</div>
+                    <div class="score">
+                        <span class="highlight">(${test.base_competitive} + ${test.bonus_competitive} Time Bonus)</span>
+                        <br /> ${test.total_competitive} Points
+                    </div>
+                </div>
+                
+                <div id="assessment" class="right">
+                    <div class="label" tal:condition="librarian">Librarian</div>
+                    <div class="label" tal:condition="not:librarian">Librarian</div>
+                    <div class="librarian" tal:condition="librarian"><img src="${request.application_url}/themes/${instance_id}/riginal/images/mlibrarian.png" alt="" /></div>
+                    <div class="librarian" tal:condition="not:librarian"><img src="${request.application_url}/themes/${instance_id}/SimpleBlue/images/flibrarian.png" alt="" /></div>
+                    <img class="bubble" src="${request.application_url}/themes/${instance_id}/SimpleBlue/images/bubble.png" alt="" />
+                    <div class="assessment">${assessment.text}</div>
+                </div>
+                <div class="clear"></div>
+                
+            </div>
+            
+            <br />
+            <br />
+            
+            <h3>Question Breakdown</h3>
+            <tal:loop repeat="result results">
+                
+                <div class="result">
+                    <label class="question-num" >
+                        <span tal:replace="repeat.result.number" />)
+                    </label>
+                    <div class="question" tal:content="structure result.question"></div>
+                    
+                    <div class="clear"></div>
+                    
+                    <tal:block condition="result.percentage>99.9">
+                        <img tal:condition="result.percentage>99.9" src="${request.application_url}/themes/${instance_id}/SimpleBlue/images/correct.png" alt="Correct" />
+                        <label class="correct">${result.percentage}% - Correct</label>
+                    </tal:block>
+                    
+                    <tal:block condition="result.percentage>0.1 and result.percentage<99.9">
+                        <img src="${request.application_url}/themes/${instance_id}/SimpleBlue/images/half.png" alt="Needs Improvement" />
+                        <label class="half">${result.percentage}% - Needs Improvement</label>
+                    </tal:block>
+                    
+                    <tal:block condition="test.max_wrong_answer_allowed == result.wrong_attempts">
+                        <img src="${request.application_url}/themes/${instance_id}/SimpleBlue/images/wrong.png" alt="Wrong" />
+                        <label class="wrong">0.0% - Wrong</label>
+                    </tal:block>
+                                            
+                    <tal:block condition="result.percentage<99.9 and test.max_wrong_answer_allowed > result.wrong_attempts and result.duration == 0 and result.attempted">
+                        <img src="${request.application_url}/themes/${instance_id}/SimpleBlue/images/wrong.png" alt="Out of time" />
+                        <label class="wrong">0.0% - Out of time</label>
+                    </tal:block>
+                    
+                    <tal:block condition="result.percentage < 0.1 and not result.attempted">
+                        <img src="${request.application_url}/themes/${instance_id}/SimpleBlue/images/wrong.png" alt="Incomplete" />
+                        <label class="wrong">0.0% - Incomplete</label>
+                    </tal:block>
+                    
+                    <div class="spacer"></div>
+                    
+                    <div class="add-stooltip details">
+                        <span class="tip-heading">(See More Details)</span>
+                        <div class="stooltip">
+                            <div>
+                                <label>Answered Incorrectly:</label>
+                                <span class="colored">${result.wrong_attempts} time(s)</span>
+                            </div>
+                            <div>
+                                <label>Time to answer:</label>
+                               <span class="colored"> ${result.duration_passed_fmt}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                    <div class="clear"></div>
+                </div>
+                
+            </tal:loop>
+            
+        </div>
+        
+        <br />
+        
+        <div class="score-options">
+            <a class="link" href="#top">To Top</a>
+        </div>
+       
+    </tal:block>
+    
+</metal:html>

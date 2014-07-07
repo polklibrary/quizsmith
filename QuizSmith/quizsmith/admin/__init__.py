@@ -26,6 +26,7 @@ def addon(config):
     # Edit Panel Routes
     add_route(config, 'edit_home','/edit')
     add_route(config, 'edit_categories','/edit/categories')
+    add_route(config, 'edit_credits','/edit/credits')
     add_route(config, 'edit_info', '/edit/info')
     add_route(config, 'import_category', '/edit/category/import')
     add_route(config, 'edit_category','/edit/category/{category}')

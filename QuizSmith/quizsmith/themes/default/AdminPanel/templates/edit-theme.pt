@@ -1,0 +1,113 @@
+<metal:html 
+    xmlns:tal="http://xml.zope.org/namespaces/tal"
+    xmlns:metal="http://xml.zope.org/namespaces/metal"
+    use-macro="load: edit-master.pt">
+    
+    
+    <tal:block metal:fill-slot="title">
+        <title>Manage - Theme - QuizSmith</title>
+    </tal:block>  
+    
+    <tal:block metal:fill-slot="js">
+        <script type="text/javascript">
+            jq(document).ready( function() {
+                jq('select[name="edit.theme.download"]').change(function(){
+                    jq(this).parent().find('a').prop('href', '${request.application_url}/edit/theme/export/' +jq(this).val() + '.zip');
+                    jq(this).parent().find('input[name="edit.theme.download.name"]').val(jq(this).val().replace('**','') + '_copy');
+                });
+                jq('select[name="edit.theme.download"]').trigger('change');
+            });
+        </script>
+    </tal:block>  
+    
+    <tal:block metal:fill-slot="logo" content="nothing" />
+   
+    <tal:block metal:fill-slot="content">
+    
+        <div class="h3">Managing: Theme</div>
+        
+        
+        
+        
+        
+        
+        <div class="edit-category">
+            
+            <form method="post" method="post" enctype="multipart/form-data">
+           
+                <div class="row">
+                    <h4>Current Theme: <i style="color: green;">${request.active_base_theme}</i></h4>
+                </div>
+           
+                <div class="row">
+                    <label>Choose a theme:</label>
+                    <select name="edit.theme.change">
+                        <tal:loop repeat="theme changeable_themes">
+                            <option value="${theme}">${theme}</option>
+                        </tal:loop>
+                    </select>
+                    <input class="button g validate right" data-validate-msg="Are you sure you want to make this change?" type="submit" value="Make this my theme" name="edit.theme.change.submit" />
+                    <div class="clear"></div>
+                    <ul>
+                        <li>** denotes original copy.</li>
+                        <li>If a theme is named the same as the original copy, the theme will always be picked over the original copy.</li>
+                    </ul>
+                </div>
+                
+                <div class="row">
+                    <label>Download existing theme</label>
+                    <select name="edit.theme.download">
+                        <tal:loop repeat="theme all_themes">
+                            <option value="${theme}">${theme}</option>
+                        </tal:loop>
+                    </select>
+                    <a class="button right" href="http://www.google.com">Download Theme</a>
+                    <div class="clear"></div>
+                    <ul>
+                        <li>** denotes original copy and can't be removed or overridden.</li>
+                        <li>Download an installed theme from your instance, make changes and reupload below.</li>
+                    </ul>
+                </div>
+                
+                <div class="row">
+                    <label>Add theme:</label>
+                    <input class="upload-box" type="file" name="edit.theme.upload" />
+                    <input class="button right" type="submit" value="Upload Theme" name="edit.theme.upload.submit" />
+                    <div class="clear"></div>
+                    <ul>
+                        <li>Original copies can't be changed or overridden. All other themes will be immediately overwritten.</li>
+                    </ul>
+                </div>
+                
+                <div class="row">
+                    <label>Remove theme:</label>
+                    <select name="edit.theme.remove">
+                        <tal:loop repeat="theme deletable_themes">
+                            <option value="${theme}" tal:condition="theme!=request.active_base_theme and theme!='Original'">${theme}</option>
+                        </tal:loop>
+                    </select>
+                    <i>You will not be able to remove the current active theme or Original</i>
+                    <input class="button r validate right" data-validate-msg="Are you sure you want to remove this theme? This can't be undone." 
+                           type="submit" value="Remove Theme" name="edit.theme.remove.submit"  />
+                    <div class="clear"></div>
+                    <br />
+                </div>
+                
+                <div class="row end">
+                    <label>Theming Help</label>
+                    <ul>
+                        <li>Allowed Extensions: <i>.pt, .html, .css, .js, .png, .jpg, .gif, .txt, .htc, .tff, .otf, .ini</i></li>
+                        <li>Not Allowed: Inline python or python in TAL expressions.</li>
+                        <li>Uploading and Replacing old themes will require a browser refresh to pick up changed images and possible other files <i>(css and js)</i></li>
+                        <li>Make sure the zip contains the theme.ini at the same level as the /templates, /css, etc... directories</li>
+                    </ul>
+                    <br />
+                </div>
+                
+                
+            </form>
+        </div>
+        
+    </tal:block>
+    
+</metal:html>

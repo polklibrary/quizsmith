@@ -16,7 +16,7 @@
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
-from quizsmith.app.models import Users
+from quizsmith.app.models import Users,Properties
 from quizsmith.app.utilities import ACL
 from quizsmith.admin import EditBaseView
 
@@ -26,6 +26,17 @@ class EditView(EditBaseView):
 
     @view_config(route_name='edit_info', permission=ACL.EDIT)
     def edit_info(self):
+    
+        # Analytics
+        if 'edit.info.analytics.submit' in self.request.params:
+            value = self.request.params.get('edit.info.analytics','')
+            analytics = Properties.by({'prop_name':'ANALYTICS'}).first()
+            analytics.prop_value = value
+            transaction.commit()
+            self.notify('Changes saved!')
+        self.response['analytics'] = Properties.get('ANALYTICS',default='')
+        
+        # Site User Information
         users = Users.by(None,sort='last_active desc')
         self.response['users_last_active'] = users.all()[0:5]
         self.response['users_local_count'] = users.filter(getattr(Users,'is_local')==True).count()

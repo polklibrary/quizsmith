@@ -1,0 +1,211 @@
+<metal:html 
+    xmlns:tal="http://xml.zope.org/namespaces/tal"
+    xmlns:metal="http://xml.zope.org/namespaces/metal"
+    use-macro="load: edit-master.pt">
+    
+    
+    <tal:block metal:fill-slot="title">
+        <title>Manage - Question - QuizSmith</title>
+    </tal:block>  
+    
+     <tal:block metal:fill-slot="js">
+        <script type="text/javascript">
+        
+        
+            var RemoveWrongAction = function(t,e) {
+                jq(t).prev().remove();
+                jq(t).prev().remove();
+                jq(t).next().remove(); //br
+                jq(t).remove(); //self span
+            }
+            var RemoveVariationAction = function(t,e) {
+                jq(t).parent().remove();
+            }
+            
+        
+            var new_variations = 1;
+            var new_wrong = 1;
+            
+            jq(document).ready( function() {
+
+                var tm = [];
+                jq('.tinymce-editor').each(function(i,t){
+                    tm.push(jq(t).prop('id'));
+                });
+                for(var t in tm)
+                    tinyMCE.execCommand('mceAddControl', false, tm[t]);
+            
+            
+                jq('#add_variation').click(function(){
+                    var div = jq('<div>').addClass('mce-row');
+                    var id = 'question'+new Date().getTime();
+                    var ta = jq('<textarea>').prop({'class':'tinymce-editor', 'name':'question_new_'+new_variations, 'id':id });
+                    var span = jq('<span>').prop({'class':'remove r button validate'}).attr('data-validate-fn','RemoveVariationAction').html("Remove");
+                    //jq(span).click(function(){
+                    //    Validators.action(function(){
+                    //        jq(span).parent().remove();
+                    //    });
+                    //});
+                    
+                    jq(div).append(span).append(ta);
+                    jq('.add_variation').append(div);
+                    
+                    tinyMCE.execCommand('mceAddControl', false, id);
+                    new_variations++;
+                });
+            
+                jq('#add_wrong').click(function(){
+                    var id = 'wrong'+new Date().getTime();
+                    var input = jq('<input>').prop({'type':'text','size':'80','name':'wronganswer_new_'+new_wrong, 'id':id });
+                    var select = jq('<select>').prop({'name':'wronganswer_new_'+new_wrong+'_index'}).html( jq('#target-for-copy').html() );
+                    jq(select).find('option').prop('selected',false);
+                    var span = jq('<span>').prop({'class':'button r validate'}).attr('data-validate-fn','RemoveWrongAction').html("Remove");
+                    //jq(span).click(function(){
+                    //    Validators.action(function(){
+                    //        jq(span).prev().remove(); //input
+                    //        jq(span).prev().remove(); //select
+                    //        jq(span).next().remove(); //br
+                    //        jq(span).remove(); //self span
+                   //     });
+                    //});
+                    
+                    
+                    jq('.add_wrong').append(input);
+                    jq('.add_wrong').append(select);
+                    jq('.add_wrong').append(span);
+                    jq('.add_wrong').append('<br />');
+                    
+                    new_wrong++;
+                });
+                
+                
+                if(window.location.href.indexOf('/new') != -1) {
+                    jq('#add_variation').trigger('click');
+                    jq('#add_wrong').trigger('click');
+                    jq('#add_wrong').trigger('click');
+                    jq('#add_wrong').trigger('click');
+                }
+                
+                
+            });
+           
+        </script>
+        
+    </tal:block>
+    
+    
+    <tal:block metal:fill-slot="logo" content="nothing" />
+    
+    <tal:block metal:fill-slot="content">
+    
+        <div class="h3">Managing: Question Set</div>
+        
+        <div class="question-edit">
+
+            <form action="${request.application_url}${request.path}" method="post">
+            
+                <div class="options">
+                    <input class="button g" type="submit" name="form.submit" value="Save" />
+                    <input class="button g" type="submit" name="form.submit.next" value="Save (And Add Another)" />
+                    <a class="button" href="${request.application_url}/edit/category/${category}/questions">Cancel</a>
+                </div>
+            
+                <div class="row">
+                    <h4>Question Variations</h4>
+                    <tal:check condition="option!='new'">
+                        <tal:block repeat="question questions">
+                            <div class="mce-row">
+                                <a class="remove r button validate" data-validate-fn="RemoveSectionAction"
+                                   href="${request.application_url}/edit/delete/Questions/${question.id}?back=${request.application_url}${request.path}">
+                                    Remove
+                                </a>
+                                <textarea id="question${question.id}" class="tinymce-editor" name="question_old_${question.id}">${question.question}</textarea>
+                            </div>
+                        </tal:block>
+                    </tal:check>
+                    
+                    <span class="add_variation"></span>
+                    <br />
+                    <input id="add_variation" class="button g" type="button" value="Add another variation" />
+                </div>
+                
+                <div class="row">
+                    <h4>Post Question Help/Hint</h4>
+                    <tal:check condition="option!='new'">
+                        <textarea id="question_sets${question_sets.id}" class="tinymce-editor" name="answerhelp_old">${question_sets.answer_help}</textarea>
+                    </tal:check>
+                    
+                    <tal:check condition="option=='new'">
+                        <textarea id="question_sets1" class="tinymce-editor" name="answerhelp_new"></textarea>
+                        <br />
+                    </tal:check>
+                </div>
+                
+                <div class="row">
+                    <h4>Correct Answer</h4>
+                    <tal:check condition="option!='new' and correct_answer">
+                        <input type="text" size="80" name="correctanswer_old_${correct_answer.id}" value="${correct_answer.answer}" />
+                        <select id="target-for-copy" name="correctanswer_old_${correct_answer.id}_index">
+                            <option value="98" tal:attributes="selected correct_answer.position==98">Random Position</option>
+                            <option value="1" tal:attributes="selected correct_answer.position==1">First Position</option>
+                            <tal:loop repeat="i range(2,6)">
+                                <option value="${i}" tal:attributes="selected correct_answer.position==i">${i}</option>
+                            </tal:loop>
+                            <option value="99" tal:attributes="selected correct_answer.position==99">Last Position</option>
+                        </select>
+                    </tal:check>
+                    
+                    <tal:check condition="option=='new' or not correct_answer">
+                        <input type="text" size="80" name="correctanswer_new" value="" />
+                        <select id="target-for-copy" name="correctanswer_new_index">
+                            <option value="98">Random</option>
+                            <option value="1">First</option>
+                            <tal:loop repeat="i range(2,6)">
+                                <option value="${i}">${i}</option>
+                            </tal:loop>
+                            <option value="99">Last</option>
+                        </select>
+                    </tal:check>
+                    
+                </div>
+                
+                <div class="row">
+                    <h4>Wrong Answers</h4>
+                    <tal:check condition="option!='new'">
+                        <tal:block repeat="wrong wrong_answers">
+                            <input type="text" size="80" name="wronganswer_old_${wrong.id}" value="${wrong.answer}" />
+                            <select name="wronganswer_old_${wrong.id}_index">
+                                <option value="98" tal:attributes="selected wrong.position==98">Random Position</option>
+                                <option value="1" tal:attributes="selected wrong.position==1">First Position</option>
+                                <tal:loop repeat="i range(2,6)">
+                                    <option value="${i}" tal:attributes="selected wrong.position==i">${i}</option>
+                                </tal:loop>
+                                <option value="99" tal:attributes="selected wrong.position==99">Last Position</option>
+                            </select>
+                            <a class="button r validate" data-validate-fn="RemoveWrongAction"
+                               href="${request.application_url}/edit/delete/Answers/${wrong.id}?back=${request.application_url}${request.path}">
+                                Remove
+                            </a>
+                            <br />
+                        </tal:block>
+                    </tal:check>
+                    
+                    <span class="add_wrong"></span>
+                    <br />
+                    
+                    <input id="add_wrong" class="button g" type="button" value="Add another wrong answer" />
+                    <b>3 or more wrong answers recommended.</b>
+                </div>
+                
+                <div class="options nb">
+                    <input class="button g" type="submit" name="form.submit" value="Save" />
+                    <input class="button g" type="submit" name="form.submit.next" value="Save (And Add Another)" />
+                    <a class="button" href="${request.application_url}/edit/category/${category}/questions">Cancel</a>
+                </div>
+            </form>
+
+        </div>
+        
+    </tal:block>
+    
+</metal:html>

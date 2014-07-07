@@ -17,26 +17,36 @@
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
+from pyramid.session import UnencryptedCookieSessionFactoryConfig
 from sqlalchemy import engine_from_config
 from quizsmith.setup import Import,Addons
 from quizsmith.app.models import DBSession
-from quizsmith.app.utilities import groupfinder, RootACL, RequestExtension
+from quizsmith.app.utilities import groupfinder, RootACL, RequestExtension, empty
 
 def main(global_config, **settings):
-    """ This function returns a Pyramid WSGI application. """
+    """ This function returns a Pyramid WSGI application. """ 
     engine = engine_from_config(settings, 'sqlalchemy.')
     DBSession.configure(bind=engine)
     authorization_policy = ACLAuthorizationPolicy()
-    authentication_policy = AuthTktAuthenticationPolicy('auth.secret', callback=groupfinder)
+    authentication_policy = AuthTktAuthenticationPolicy(empty(settings.get('authentication.secret'),'default_key_883782'), 
+                                                        cookie_name=empty(settings.get('authentication.cookie_name'),'auth_tkt'), 
+                                                        secure=empty(settings.get('authentication.secure'),False), 
+                                                        timeout=empty(settings.get('authentication.timeout'),None), 
+                                                        max_age=empty(settings.get('authentication.max_age'),None), 
+                                                        path=empty(settings.get('authentication.path'),'/'),
+                                                        callback=groupfinder)
+    session_factory = UnencryptedCookieSessionFactoryConfig(empty(settings.get('session.secret'),'default_key_883782'))
     
     config = Configurator(settings=settings,
                           authentication_policy=authentication_policy,
                           authorization_policy=authorization_policy,
                           request_factory=RequestExtension,
-                          root_factory=RootACL)
+                          root_factory=RootACL,
+                          session_factory=session_factory)
+                          
     
     config.add_static_view('themes', 'quizsmith:themes')
-    
+	
     import quizsmith
     config = Addons.load_addons(config,quizsmith)
 

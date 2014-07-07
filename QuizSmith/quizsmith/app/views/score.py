@@ -105,9 +105,13 @@ class Score(BaseView):
                  'answer_help': str(answer_help),           
                  'attempted': result.attempted,    
                  'answer_choices': str(result.get_answers()),
+                 'had_wrong_attempts': (result.wrong_attempts!=0 and result.attempted),
+                 'had_more_than_one_wrong': (result.wrong_attempts>1),
+                 'had_no_time_remaining': (result.duration<1 and result.attempted),
                 }
                 
-    
+        
+        
     @view_config(route_name='pdf', permission=ACL.AUTHENTICATED)
     def pdf(self):
         id = self.request.matchdict['id']
@@ -171,7 +175,7 @@ class Score(BaseView):
                 emails = self.request.params['email.addresses'].replace(' ','').split(',')
                 for email in emails:
                     if not Validate.email(email):
-                        self.response['message'] = 'Invalid email address'
+                        self.notify('Invalid email address',warn=True)
                         return self.template('email.pt')
                         
                 try:
@@ -183,13 +187,12 @@ class Score(BaseView):
                     message.attach(attachment)
                     mailer = get_mailer(self.request)
                     mailer.send(message)
-                    self.response['message'] = 'Email has been sent!'
-                    self.response['message_class'] = 'info'
+                    self.notify('Email sent!')
                 except Exception as e:
                     print "ERROR: " + str(e)
-                    self.response['message'] = 'Unable to send email.'
+                    self.notify('Unable to send email!',warn=True)
             else:
-                self.response['message'] = "Can't send example email addresses."
+                self.notify('Unable to send example email!',warn=True)
 
         return self.template('email.pt')
             

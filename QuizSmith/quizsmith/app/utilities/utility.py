@@ -55,8 +55,12 @@ class Validate(object):
             return (len(o) > 0)
         else:
             return bool(o)
-    
 
+def empty(o,default):
+    if o == '' or o == None or o == [] or o == {}:
+        return default
+    return o
+    
 def RemoveImages(data):
     p = re.compile(r'<img.*?/>')
     return p.sub('', data)

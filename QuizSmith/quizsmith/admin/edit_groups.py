@@ -25,8 +25,13 @@ class EditView(EditBaseView):
 
     @view_config(route_name='edit_groups', permission=ACL.ADMIN)
     def edit_groups(self):
-        self.response['email'] = self.request.params.get('edit.find.user','')
+        lookup = self.request.params.get('edit.user.find','')
+        self.response['email'] = self.request.params.get('edit.user.find.email','')
         self.response['user'] = Users.by({'email':self.response['email']}).first()
+        if self.response['user'] and lookup:
+            self.notify('User found')
+        if self.response['email'] and not self.response['user'] and lookup:
+            self.notify('No user found',warn=True)
         self.response['editing_group'] = None
 
         # add/remove users from groups
@@ -35,8 +40,7 @@ class EditView(EditBaseView):
             group = Groups.by(id).first()
             self.response['user'].groups.append(Groups.by(id).first())
             transaction.commit()
-            self.response['message'] = "Added user to group"
-            self.response['message_class'] = "info"
+            self.notify('Added user to group')
             self.response['editing_group'] = Groups.by(id).first()
             self.response['user'] = Users.by({'email':self.response['email']}).first()
             
@@ -44,8 +48,7 @@ class EditView(EditBaseView):
             id = self.request.params.get('edit.user.group.remove','')
             self.response['user'].groups.remove(Groups.by(id).first())
             transaction.commit()
-            self.response['message'] = "Removed user from group"
-            self.response['message_class'] = "info"
+            self.notify('Removed user from group')
             self.response['user'] = Users.by({'email':self.response['email']}).first()
             
         if 'edit.group.find.submit' in self.request.params:
@@ -67,16 +70,14 @@ class EditView(EditBaseView):
             
             transaction.commit()
             self.response['editing_group'] = Groups.by(id).first()
-            self.response['message'] = "Edit successful"
-            self.response['message_class'] = "info"
+            self.notify('Changes saved!')
             
         if 'edit.group.new.submit' in self.request.params:
             i = Groups.newest().id + 1
             DBSession.add(Groups(name='New Group' + str(i)))
             transaction.commit()
             self.response['editing_group'] = Groups.newest()
-            self.response['message'] = "Added new group"
-            self.response['message_class'] = "info"
+            self.notify('Added group!')
             
         if 'edit.group.delete.submit' in self.request.params:
             id = int(self.request.params.get('edit.group.find','0'))
@@ -85,12 +86,11 @@ class EditView(EditBaseView):
                     group = Groups.by(id).first()
                     DBSession.delete(group)
                     transaction.commit()
-                    self.response['message'] = "Deleted group"
-                    self.response['message_class'] = "info"
+                    self.notify('Removed group!')
                 except exc.SQLAlchemyError:
-                    self.response['message'] = "You can't delete this group.  It has user and category dependencies."
+                    self.notify("You can't delete this group.  It has user and category dependencies.",warn=True)
             else:
-                self.response['message'] = "You can't delete this permanent group"
+                self.notify("Can't remove permanent group!",warn=True)
             
         self.response['groups'] = Groups.all()
         self.response['categories'] = Categories.all()

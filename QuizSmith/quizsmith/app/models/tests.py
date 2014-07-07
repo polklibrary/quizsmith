@@ -81,18 +81,18 @@ class Tests(Base, TriviaModel):
         from quizsmith.app.models import TestsResults
         from quizsmith.app.utilities import Seconds2Str
         tests = DBSession.query(Tests,func.count(Tests.category)).filter(Tests.alias==alias).group_by(Tests.category).all()
-        best_duration = DBSession.query(Tests).filter(Tests.alias==alias).filter(Tests.time_spent > 0).order_by('time_spent asc').first().time_spent
-        best_scores = DBSession.query(Tests).filter(Tests.alias==alias).order_by('total_competitive desc').first()
-        last_played = DBSession.query(Tests).filter(Tests.alias==alias).order_by('created desc').first().created
-        
+
         results = []
         for test in tests:
+            best_duration = DBSession.query(Tests).filter(Tests.alias==alias).filter(Tests.category==test[0].category).filter(Tests.time_spent > 0).order_by('time_spent asc').first().time_spent
+            best_scores = DBSession.query(Tests).filter(Tests.alias==alias).filter(Tests.category==test[0].category).order_by('total_competitive desc').first()
+            last_played = DBSession.query(Tests).filter(Tests.alias==alias).filter(Tests.category==test[0].category).order_by('created desc').first().created
             results.append({'Test':test[0], 
                             'best_duration':Seconds2Str(best_duration), 
                             'best_percentage':round(best_scores.percentage,2), 
                             'best_competitive':int(best_scores.total_competitive), 
                             'Count':test[1], 
-                            'last_played': last_played})
+                            'last_played': last_played.strftime('%m/%d/%Y %I:%M %p')})
         return results
         
 

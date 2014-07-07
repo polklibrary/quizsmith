@@ -1,4 +1,14 @@
+1.0.1
+-----
+-  Set restrictions to python in templates.
+-  Multi-host infrastructure now
+-  Theming instances and better customizations
+-  Admin Panel UI upgraded
+-  Admin Panel analytics setup
+-  Admin Panel leaderboard now customizable
+-  Admin Panel credits now customizable
+
 1.0.0
 -----
-
 -  Production Release
+

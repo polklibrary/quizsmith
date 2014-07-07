@@ -1,0 +1,162 @@
+<metal:html 
+    xmlns:tal="http://xml.zope.org/namespaces/tal"
+    xmlns:metal="http://xml.zope.org/namespaces/metal"
+    use-macro="load: edit-master.pt">
+    
+    
+    <tal:block metal:fill-slot="title">
+        <title>Manage - Leaderboard - QuizSmith</title>
+    </tal:block>  
+    
+    <tal:block metal:fill-slot="js">
+        <script type="text/javascript">
+        
+        
+            var RemoveRowAction = function(t,e) {
+                jq(t).parent().remove();
+                rebind_all();
+            }
+            var RemoveSectionAction = function(t,e) {
+                jq(t).parent().remove();
+                rebind_all();
+            }
+            
+            var rebind_all = function() {
+                jq('form fieldset').each(function(i,t){
+                    jq(t).find('input.data-title').attr('name','hofs_' + i + '_title');
+                    jq(t).find('input.data-index').attr('name','hofs_' + i + '_index');
+                    jq(t).find('ul.sortable>li').each(function(j,tt){
+                        jq(tt).find('input.data-name').attr('name', 'hofs_' + i + '_' + j + '_name');
+                        jq(tt).find('input.data-score').attr('name', 'hofs_' + i + '_' + j + '_score');
+                        jq(t).find('input.total-rows').val(j+1).attr('name','hofs_' + i + '_rows');
+                    });
+                    jq('#total-sections').val(i+1);
+                });
+                
+                // Add row
+                jq('input.add-row').unbind('click');
+                jq('input.add-row').click(function() {
+                    var row = jq('#credit-init > li').clone();
+                    jq(row).find('input.remove').addClass('validate');
+                    jq(this).parent().find('ul.sortable').append(row);
+                    rebind_all();
+                });
+            }
+            
+            jq(document).ready( function() {
+                jq('input[name="edit.leaderboard.archive_date"]').datepicker({'dateFormat' : 'yy-m-d'});
+
+                jq('.sortable ').sortable({'placeholder':'state-highlight', 
+                    stop: function() {
+                        rebind_all();
+                    }
+                });
+                
+                // Add new section
+                jq('#add-section').click(function() {
+                    var section = jq('#leaderboard-init > fieldset').clone();
+                    jq(section).find('input.remove').addClass('validate');
+                    jq('#section-bin').append(section);
+                    rebind_all();
+                });
+                
+                rebind_all();
+            });
+            
+        </script>
+    </tal:block>  
+    
+    <tal:block metal:fill-slot="logo" content="nothing" />
+    
+    <tal:block metal:fill-slot="content">
+    
+        <div class="h3">Managing: Leaderboard</div>
+        
+        <div class="edit-content">
+
+            <form method="post">
+            
+                <div class="row">
+                    <h4>Archive Scores</h4>
+
+                    <label>Hide Scores Before</label><br />
+                    <input type="text" name="edit.leaderboard.archive_date" value="${leaderboard.archive_date}" readonly="true" />
+                    <br /><br />
+                </div>
+                
+                <div class="row">
+                    <h4>Hall of Fame</h4>
+
+                    <tal:block repeat="hof hofs">
+                        <fieldset>
+                            <div>
+                                <label>Title:</label><input class="data-title" size="25"  type="text" value="${hof.title}" name="hofs_0_title" />
+                            </div>
+                            <div>
+                                <label>Position:</label><input class="data-index" size="1" type="text" value="${hof.index}" name="hofs_0_index" />
+                            </div>
+                            
+                            <ul class="sortable">
+                                <tal:block repeat="h hof.players">
+                                <li class="state-default">
+                                    <input class="data-name" type="text" value="${h.name}" size="45" name="hofs_0_1_name"/>
+                                    <input class="data-score" type="text" value="${h.score}" size="10" name="hofs_0_1_score"/>
+                                    <input class="button r remove right validate" data-validate-fn="RemoveRowAction" type="button" value="Remove" />
+                                </li>
+                                </tal:block>
+                            </ul>
+                            <input class="add-row button g" type="button" value="Add Another Row" />
+                            <input class="remove-section button r remove right validate" data-validate-fn="RemoveSectionAction" type="button" value="Remove Section"  />
+                            <input class="total-rows" type="hidden" value="0" name="hofs_0_rows" />
+                            <span class="clear" />
+                        </fieldset>
+                    </tal:block>
+                    <div id="section-bin"></div>
+                    <br />
+                    <input class="button g" type="button" value="Add Another Section" id="add-section" />
+                </div>
+                
+                <div class="options nb">
+                    <input class="button g" type="submit" value="Save Changes" name="edit.leaderboard.submit"/>
+                    <a class="button" href="${request.application_url}/edit">Cancel</a>
+                    <input id="total-sections" type="hidden" value="0" name="hofs_sections" />
+                </div>
+                
+            </form>
+
+        </div>
+        
+        <div id="leaderboard-init" class="hidden">
+            <fieldset>
+                <div>
+                    <label>Title:</label><input class="data-title" size="25" type="text" value="" name="hofs_title" />
+                </div>
+                <div>
+                    <label>Position:</label><input class="data-index" size="1" type="text" value="0" name="hofs_index" />
+                </div>
+    
+                <ul class="sortable">
+                    <li class="state-default">
+                        <input class="data-name" type="text" value="" size="45" name="hofs_name"/>
+                        <input class="data-score" type="text" value="" size="10" name="hofs_score"/>
+                        <input class="button r remove right" type="button" data-validate-fn="RemoveRowAction" value="Remove" />
+                    </li>
+                </ul>
+                <input class="add-row button g" type="button" value="Add Another Row" />
+                <input class="remove-section button r remove right" type="button" data-validate-fn="RemoveSectionAction" value="Remove Section" />
+                <input class="total-rows" type="hidden" value="0" name="hofs_rows" />
+                <span class="clear"/>
+            </fieldset>
+        </div>
+
+        <ul id="credit-init" class="hidden">
+            <li class="state-default">
+                <input class="data-name" type="text" value="" size="45" name="name" />
+                <input class="data-score" type="text" value="" size="10" name="score" />
+                <input class="button remove r right" type="button" data-validate-fn="RemoveRowAction" value="Remove" />
+            </li>
+        </ul>
+        
+    </tal:block>
+    
+</metal:html>

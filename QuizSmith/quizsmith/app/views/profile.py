@@ -26,16 +26,16 @@ class Profile(BaseView):
     @view_config(route_name='profile', permission=ACL.AUTHENTICATED)
     def profile(self):
         self.response['played'] = True
-        self.response['category'] = 0
+        self.response['category'] = None
         self.response['tests'] = []
         self.response['categories'] = []
-        
-        self.response['format_time'] = Seconds2Str
         
         try:
             if 'category' in self.request.params:
                 self.response['category'] = self.request.params['category']
                 self.response['tests'] = Tests.by({'category':self.response['category'], 'alias':self.request.user.alias}, sort='id desc').all()
+                for test in self.response['tests']:
+                    test.time_spent = Seconds2Str(test.time_spent)
             else:
                 self.response['categories'] = Tests.best_by_user_alias(self.request.user.alias)
         except:

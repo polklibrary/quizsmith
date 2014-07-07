@@ -1,0 +1,53 @@
+<metal:html 
+    xmlns:tal="http://xml.zope.org/namespaces/tal"
+    xmlns:metal="http://xml.zope.org/namespaces/metal"
+    use-macro="load: edit-master.pt">
+    
+    
+    <tal:block metal:fill-slot="title">
+        <title>Manage - SiteInfo - QuizSmith</title>
+    </tal:block>  
+    
+    <tal:block metal:fill-slot="logo" content="nothing" />
+   
+    <tal:block metal:fill-slot="content">
+    
+        <div class="h3">Site Info</div>
+        
+        <div class="edit-category">
+            <form method="post">
+            
+                <div class="row">
+                    <h4>Registered Users</h4>
+                    <div><b>Local:</b> ${users_local_count} users</div>
+                    <div><b>Not local:</b> ${users_non_local_count} users</div>
+                    <div><b>Total:</b> ${users_total_count} users</div>
+                </div>
+                
+                <div class="row">
+                    <h4>Last Users Online</h4>
+                    <div tal:repeat="user users_last_active"><span tal:replace="user.last_active" /> / <span tal:replace="user.alias" /></div>
+                </div>
+                
+                <div class="row">
+                    <h4>Application Information</h4>
+                    <div><label>Currently Running: </label><a href="http://www.uwosh.edu/library/quizsmith">QuizSmith v${request.registry.settings.version}</a></div>    
+                    <div><label>Copyright: </label><a href="http://www.uwsa.edu/bor/">Copyright 2014 UW Board of Regents</a> </div>
+                    <div><label>Authors: </label><a href="http://www.uwosh.edu/library">Created by Polk Library</a> </div>
+                </div>
+                
+                <div class="row">
+                    <h4>Google Analytics</h4>
+                    <textarea class="normal" name="edit.info.analytics" rows="10">${analytics}</textarea>
+                </div>
+                
+                <div class="options nb"> 
+                    <input class="button g" type="submit" value="Save Changes" name="edit.info.analytics.submit" />
+                    <a class="button" href="${request.application_url}/edit/info">Cancel</a>
+                </div> 
+            </form>
+        </div>
+        
+    </tal:block>
+    
+</metal:html>

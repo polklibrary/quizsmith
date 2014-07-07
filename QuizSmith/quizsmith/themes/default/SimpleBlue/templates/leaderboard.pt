@@ -1,0 +1,125 @@
+<metal:html 
+    xmlns:tal="http://xml.zope.org/namespaces/tal"
+    xmlns:metal="http://xml.zope.org/namespaces/metal"
+    use-macro="load: master.pt">
+
+    <tal:block metal:fill-slot="title">
+        <title>Leaderboards - Trivia</title>
+    </tal:block>  
+    
+    <tal:block metal:fill-slot="logo"></tal:block>  
+    
+    <tal:block metal:fill-slot="js">
+        <script type="text/javascript" src="${request.application_url}/themes/${instance_id}/SimpleBlue/jquery.dataTables.min.js"></script>
+        <script type="text/javascript">
+        
+            jq(document).ready(function(){
+                var category = jq.urlParam('category');
+                
+                var get_your_ranking = function(){
+                        jq.getJSON('${request.application_url}/leaderboardYourScore?category='+category, function(data){
+                            if (data.status) {
+                                var tr = jq('<tr>').addClass('you');
+                                jq(tr).append(jq('<td>').html(data.rank));
+                                jq(tr).append(jq('<td>').html(data.total_competitive));
+                                jq(tr).append(jq('<td>').html(data.time_spent));
+                                jq(tr).append(jq('<td>').html('YOU'));
+                                jq('#leaderboards-results tbody').prepend(tr);
+                            }
+                        }).fail(function() {
+                            // ignore 403
+                        });
+                }
+                
+                
+                jq("#leaderboards-results").dataTable({
+                    "iDisplayLength": 100,
+                    "aaSorting": [[ 0, 'desc' ]],
+                    "aoColumnDefs": [{ 'bSortable': false, 'aTargets': [ 3 ] }],
+                    "bLengthChange": false,
+                    "bFilter": false,
+                    "bProcessing": true,
+                    "bServerSide": true,
+                    "sAjaxSource": "${request.application_url}/leaderboardScores",
+                    "fnServerParams": function ( args ) {
+                        args.push( { "name": "category", "value": category } );
+                    },
+                    "fnDrawCallback" : function() {
+                        jq("html,body").scrollTop(0);
+                        get_your_ranking();
+                    }
+                }); 
+                
+                
+                
+                
+                jq('#leaderboard div.sidebar a').each(function(i,t){
+                    if( jq(t).text() == jq.urlParam('category')) 
+                        jq(t).parent().find('img').show();
+                });
+                if(jq.urlParam('category') == 0) 
+                    jq('#leaderboard div.sidebar img').first().show();
+            });
+        </script>
+    </tal:block> 
+    <tal:block metal:fill-slot="css">
+        <link rel="stylesheet" type="text/css" href="${request.application_url}/themes/${instance_id}/SimpleBlue/jquery.dataTables.css" />
+        <style>
+            #content { width: 100%; margin: 0; }
+        </style>
+    </tal:block>  
+    
+    <tal:block metal:fill-slot="content">
+    
+        <div id="leaderboard">
+
+            <div class="navigation">
+                <a class="link" href="${request.application_url}"> Main Menu </a>
+                <a class="link" href="${request.application_url}/profile"> Your Past Scores </a>
+                <a class="link" href="${request.application_url}/leaderboard/top"> Hall of Fame </a>
+            </div>
+            
+         
+            <div class="sidebar">
+                <div class="heading">
+                    Change Category
+                </div>
+                <div>
+                    <img src="${request.application_url}/themes/${instance_id}/SimpleBlue/images/right_arrow.png" alt="Active" />
+                    <a href="${request.application_url}/leaderboard">All Categories</a>
+                </div>
+                <tal:block repeat="category categories">
+                    <div>
+                        <img src="${request.application_url}/themes/${instance_id}/SimpleBlue/images/right_arrow.png" alt="Active" />
+                        <a href="${request.application_url}/leaderboard?category=${category}">${category}</a>
+                    </div>
+                </tal:block>
+            </div>
+        
+        
+            <tal:block condition="active_category">
+                <h2 style="margin: 0px 0px 0px 340px;"> ${active_category} </h2>
+            </tal:block>
+            <tal:block condition="not: active_category">
+                <h2 style="margin: 20px 0px 10px 340px;"> All Categories </h2>
+            </tal:block>
+            <table id="leaderboards-results" class="tablesorter">
+                <thead>
+                    <tr>
+                        <th style="width:70px;">Ranking</th>
+                        <th>Score</th>
+                        <th>Time</th>
+                        <th>Player</th>
+                    </tr>
+                </thead>
+            </table>
+            
+            <div class="clear"></div>
+        </div>
+        <br />
+        <br />
+        <br />
+            
+    </tal:block>
+    
+</metal:html>

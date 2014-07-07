@@ -31,6 +31,7 @@ class Alias(BaseView):
             return self.reroute()
 
         self.response['alias'] =  ''
+        self.response['category'] = self.request.params.get('category','0')
         self.response['accessibility'] = False
         if 'form.submitted' in self.request.params:
             self.response['alias'] = Validate.sanatize(self.request.params['alias'])
@@ -38,9 +39,9 @@ class Alias(BaseView):
 
             user = Users.by({'alias':self.response['alias']}).first()
             if user:
-                self.response['message'] = 'Alias is already taken'
+                self.notify('Alias already in use!',warn=True)
             elif not Validate.alias(self.response['alias']):
-                self.response['message'] = 'Improper Alias'
+                self.notify('Improper alias!',warn=True)
             else:
                 user = Users.by(self.request.user.id).first()
                 user.alias = self.response['alias']

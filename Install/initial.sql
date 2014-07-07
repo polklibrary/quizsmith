@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: uwosh.edu
--- Generation Time: Mar 17, 2014 at 08:51 AM
+-- Generation Time: Jul 02, 2014 at 09:10 AM
 -- Server version: 5.0.95
 -- PHP Version: 5.3.3
 
@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS `answers` (
   `position` int(2) NOT NULL default '98',
   PRIMARY KEY  (`id`),
   KEY `FK_ANSWERGROUPS` (`question_sets_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=59 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=97 ;
 
 --
 -- Dumping data for table `answers`
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `answers` (
 
 INSERT INTO `answers` (`id`, `question_sets_id`, `answer`, `is_correct`, `position`) VALUES
 (1, 1, 'Nile - Kagera', 1, 98),
-(2, 1, 'Amazon - Ucayali - Apurímac', 0, 98),
+(2, 1, 'Amazon - Ucayali - ApurÃ­mac', 0, 98),
 (3, 1, 'Yangtze', 0, 98),
 (4, 1, 'Mississippi-Missouri-Jefferson', 0, 98),
 (5, 2, 'China', 1, 98),
@@ -118,7 +118,7 @@ CREATE TABLE IF NOT EXISTS `categories` (
   PRIMARY KEY  (`id`),
   KEY `FK_IN_TRANSITIONS` (`transition_in`),
   KEY `FK_OUT_TRANSITIONS` (`transition_out`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=3 ;
 
 --
 -- Dumping data for table `categories`
@@ -209,9 +209,9 @@ CREATE TABLE IF NOT EXISTS `groups_assignments` (
 CREATE TABLE IF NOT EXISTS `properties` (
   `id` int(11) unsigned NOT NULL auto_increment,
   `prop_name` varchar(55) collate utf8_unicode_ci NOT NULL,
-  `prop_value` varchar(55) collate utf8_unicode_ci NOT NULL,
+  `prop_value` text collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=7 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=11 ;
 
 --
 -- Dumping data for table `properties`
@@ -223,7 +223,11 @@ INSERT INTO `properties` (`id`, `prop_name`, `prop_value`) VALUES
 (3, 'MAILER_GLOBAL_FROM_ADDRESS', 'librarytechnology@uwosh.edu'),
 (4, 'MAILER_FEEDBACK_ADDRESS', 'librarytechnology@uwosh.edu'),
 (5, 'MAILER_BODY', 'Attached is your Submission'),
-(6, 'LEADERBOARD_ARCHIVE_DATE', '2013-8-13');
+(6, 'LEADERBOARD_ARCHIVE_DATE', '2013-8-13'),
+(7, 'ANALYTICS', ''),
+(8, 'MAILER_HELP_ADDRESS', 'librarytechnology@uwosh.edu'),
+(9, 'CREDITS', '[{"type": "title", "id": 0, "value": "Information Literacy Librarian"}, {"type": "name", "id": 1, "value": "Ted Mulvey "}, {"type": "email", "id": 2, "value": "mulveyt@uwosh.edu"}, {"type": "title", "id": 3, "value": "Web Developer"}, {"type": "name", "id": 4, "value": "David Hietpas"}, {"type": "email", "id": 5, "value": "hietpasd@uwosh.edu"}, {"type": "title", "id": 6, "value": "Module Creators"}, {"type": "name", "id": 7, "value": "Erin McArthur"}, {"type": "name", "id": 8, "value": "Ted Mulvey"}, {"type": "title", "id": 9, "value": "The Think Tank"}, {"type": "name", "id": 10, "value": "Jeff Brunner"}, {"type": "name", "id": 11, "value": "Crystal Buss"}, {"type": "name", "id": 12, "value": "Marisa Finkey"}, {"type": "name", "id": 13, "value": "Stephen Katz"}, {"type": "name", "id": 14, "value": "Maccabee Levine"}, {"type": "name", "id": 15, "value": "Erin McArthur"}, {"type": "name", "id": 16, "value": "Sarah Neises"}, {"type": "name", "id": 17, "value": "Joshua Ranger"}, {"type": "title", "id": 18, "value": "Special Thank You"}, {"type": "name", "id": 19, "value": "Sam Looker"}, {"type": "name", "id": 20, "value": "Dan Petersen"}, {"type": "name", "id": 21, "value": "T. Kim Nguyen"}, {"type": "title", "id": 22, "value": "University of Wisconsin Oshkosh"}, {"type": "name", "id": 23, "value": "Polk Library"}]'),
+(10, 'LEADERBOARD_HOF', '[{"index": 0, "players": [{"index": 0, "score": "9393", "name": "Amazin_Nate"}, {"index": 1, "score": "9003", "name": "CatCrazy"}, {"index": 2, "score": "8797", "name": "Jordan"}, {"index": 3, "score": "4454", "name": "Swaggy"}], "title": "Fall 2013"}]');
 
 -- --------------------------------------------------------
 
@@ -237,7 +241,7 @@ CREATE TABLE IF NOT EXISTS `questions` (
   `question` text collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `FK_QUESTIONGROUPS` (`question_sets_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=21 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=31 ;
 
 --
 -- Dumping data for table `questions`
@@ -279,7 +283,7 @@ CREATE TABLE IF NOT EXISTS `question_sets` (
   `modified` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
   KEY `FK_CATEGORIES` (`category_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=16 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=27 ;
 
 --
 -- Dumping data for table `question_sets`
@@ -327,7 +331,7 @@ CREATE TABLE IF NOT EXISTS `tests` (
   `created` timestamp NOT NULL default '0000-00-00 00:00:00',
   `modified` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=32 ;
 
 --
 -- Dumping data for table `tests`
@@ -352,7 +356,7 @@ CREATE TABLE IF NOT EXISTS `tests_results` (
   `attempted` tinyint(1) default '0',
   PRIMARY KEY  (`id`),
   KEY `FK_TR_TESTS` (`tests_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=181 ;
 
 --
 -- Dumping data for table `tests_results`
@@ -406,15 +410,15 @@ CREATE TABLE IF NOT EXISTS `users` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `alias` (`alias`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=14 ;
 
 --
 -- Dumping data for table `users`
 --
 
 INSERT INTO `users` (`id`, `is_local`, `email`, `password`, `fullname`, `alias`, `current_test`, `current_question`, `needs_accessibility`, `last_active`) VALUES
-(1, 1, 'admin@test.com', 'db14b0f8d5648b050798c34719946c395c325e5efc459079e0d78773fe76151e10d30f957c03a1c6', NULL, 'ExampleAdmin', 47, 34, 0, '2014-03-17 08:50:43'),
-(2, 1, 'editor@test.com', '270b3c246f33adb5745d48dd3e24ca1e728189a7e1c304e9e6c5a022f6390d55757645fec9003305', NULL, 'ExampleEditor', 24, 17, 0, '2013-12-10 13:56:40');
+(1, 1, 'admin@test.com', 'db14b0f8d5648b050798c34719946c395c325e5efc459079e0d78773fe76151e10d30f957c03a1c6', NULL, 'ExampleAdmin', 30, 19, 0, '2014-07-02 09:08:56'),
+(2, 1, 'editor@test.com', '270b3c246f33adb5745d48dd3e24ca1e728189a7e1c304e9e6c5a022f6390d55757645fec9003305', NULL, 'ExampleEditor', 17, 15, 0, '2014-06-04 07:51:14');
 
 -- --------------------------------------------------------
 

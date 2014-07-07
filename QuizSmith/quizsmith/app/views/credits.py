@@ -17,17 +17,16 @@
 from pyramid.httpexceptions import HTTPFound
 from pyramid.url import route_url
 from pyramid.view import view_config
-
-from quizsmith.app.models import Users
+from quizsmith.app.models import Properties
 from quizsmith.app.views import BaseView
 from quizsmith.app.utilities import ACL,Validate
 
-import transaction
+import json
 
 class Credits(BaseView):
 
     @view_config(route_name='credits')
     def credits(self):
-        
+        self.response['credits'] = json.loads(Properties.get('CREDITS','[]'))
         return self.template('credits.pt')
         

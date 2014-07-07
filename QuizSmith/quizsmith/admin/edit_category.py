@@ -16,7 +16,7 @@
 
 from pyramid.httpexceptions import HTTPFound,HTTPForbidden
 from pyramid.view import view_config
-from quizsmith.app.models import DBSession,Categories,Groups,Transitions
+from quizsmith.app.models import DBSession,Categories,QuestionSets,Groups,Transitions
 from quizsmith.app.utilities import ACL,Validate
 from quizsmith.admin import EditBaseView
 from quizsmith.setup import Addons
@@ -34,7 +34,8 @@ class EditView(EditBaseView):
                     c.position = v;
                     DBSession.flush()
             transaction.commit()
-            return HTTPFound(location=self.request.application_url + '/edit')
+            self.notify('Changes saved!')
+            return HTTPFound(location=self.request.application_url + '/edit/categories')
         return self.template('/edit-categories.pt', theme='AdminPanel')
         
         
@@ -74,19 +75,18 @@ class EditView(EditBaseView):
             
             assesment_data = []
             for key,v in self.request.params.iteritems():
-                if Validate.sanatize(v) != '':
-                    if key.startswith('assessment'):
-                        field_data = key.split('.')
-                        row = {}
-                        if not any(a['id'] == field_data[-1] for a in assesment_data):
-                            assesment_data.append(row)
-                        else:
-                            row = filter(lambda x: x['id'] == field_data[-1], assesment_data)[0]
-                        row['id'] = field_data[-1]
-                        if v.isdigit():
-                            row[field_data[1]] = int(v)
-                        else:  
-                            row[field_data[1]] = v
+                if key.startswith('assessment'):
+                    field_data = key.split('.')
+                    row = {}
+                    if not any(a['id'] == field_data[-1] for a in assesment_data):
+                        assesment_data.append(row)
+                    else:
+                        row = filter(lambda x: x['id'] == field_data[-1], assesment_data)[0]
+                    row['id'] = field_data[-1]
+                    if v.isdigit():
+                        row[field_data[1]] = int(v)
+                    else:  
+                        row[field_data[1]] = str(v)
             active.set_assessments(assesment_data)
             
             editors = []
@@ -108,6 +108,7 @@ class EditView(EditBaseView):
             active.set_groups(self.request.params.getall('category.playable'), editors, reviewers)
             DBSession.flush()
             transaction.commit()
+            self.notify('Changes saved!')
             if 'form.submit.questions' in self.request.params:
                 return HTTPFound(location=self.request.application_url + '/edit/category/' + category_id + '/questions')
             return HTTPFound(location=self.request.application_url + '/edit/category/' + category_id)
@@ -120,6 +121,8 @@ class EditView(EditBaseView):
         self.response['transitions_out'] = self.response['active_category'].transition_out
         self.response['transitions'] = Transitions.all()
         
+        
+        self.response['questions'] = QuestionSets.by({'category_id':category_id}).count()
         self.response['all_edit_groups'] = Groups.by({'edit':True}).all()
         self.response['all_play_groups'] = Groups.by({'play':True}).all()
         self.response['all_review_groups'] = Groups.by({'review':True}).all()

@@ -69,8 +69,7 @@ class ExportImport(EditBaseView):
             content = self.request.params.get('form.import')
             data = self._import_zip(content)
             if not data:
-                self.response['message'] = 'This export was made for a different version of this application.\
-                                            You can rename the .zip filename to match your systems version, however this will most likely result in consequences and is not recommended.'
+                self.notify('This export was made for a different version of this application.',warn=True)
             else:
                 category  = data['category']
                 new_category = Categories(name=category['name'],
@@ -107,8 +106,7 @@ class ExportImport(EditBaseView):
                         DBSession.add(new_a)
                 DBSession.flush()
                 transaction.commit()
-                self.response['message'] = 'Imported!'
-                self.response['message_class'] = 'info'
+                self.notify('Successfully imported!')
             
         return self.template('/import-category.pt', theme='AdminPanel')
         

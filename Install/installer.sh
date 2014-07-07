@@ -31,7 +31,7 @@ if [ -d "python" ]; then
 else
     echo Installing Python
     sleep 5
-    wget "http://www.python.org/ftp/python/2.7.5/Python-2.7.5.tgz"
+    wget "https://www.python.org/ftp/python/2.7.5/Python-2.7.5.tgz" --no-check-certificate
     tar -xvf Python-2.7.5.tgz
     mkdir python
     cd python
@@ -64,57 +64,22 @@ else
     rm ez_setup.py
 fi
 
-echo Dependency check...
 sleep 3
-./python/bin/easy_install Babel==1.3
-./python/bin/easy_install js.tinymce==3.5.2_1
-./python/bin/easy_install js.jqgrid==4.4.4
-./python/bin/easy_install js.jquery==1.9.1
-./python/bin/easy_install js.jquery_form==3.09
-./python/bin/easy_install js.jquery_jgrowl==1.2.5
-./python/bin/easy_install js.jquery_markitup==1.1.10_1
-./python/bin/easy_install js.jqueryui==1.8.24
-./python/bin/easy_install js.jquery_selectmenu==0.1
-./python/bin/easy_install fanstatic==0.16
-./python/bin/easy_install fa.jquery==0.9.5
-./python/bin/easy_install FormAlchemy==1.4.3
-./python/bin/easy_install pyramid==1.3.3
-./python/bin/easy_install SQLAlchemy==0.7.8
-./python/bin/easy_install transaction==1.4.1
-./python/bin/easy_install pyramid_tm==0.7
-./python/bin/easy_install zope.sqlalchemy==0.7.2
-./python/bin/easy_install waitress==0.8.2
-./python/bin/easy_install pymysql==0.5
-./python/bin/easy_install pyramid_formalchemy==0.4.3
-./python/bin/easy_install fa.jquery==0.9.5
-./python/bin/easy_install fanstatic==0.16
-./python/bin/easy_install pyramid_mailer==0.11
-./python/bin/easy_install pisa==3.0.33
-./python/bin/easy_install reportlab==2.7
-./python/bin/easy_install html5lib==0.95
-./python/bin/easy_install requests==1.2.0
-./python/bin/easy_install pyPDF==1.11
-./python/bin/easy_install pyramid_fanstatic==0.4
-./python/bin/easy_install pyramid_rewrite==0.2
-
-# Move D2L Patched Egg.
+echo Moving patched eggs...
 cp ./Install/D2LValence-0.1.14-py2.7.egg.tar python/lib/python2.7/site-packages/
 cd python/lib/python2.7/site-packages/
 rm -rf D2LValence-0.1.14-py2.7.egg
 tar -xvf D2LValence-0.1.14-py2.7.egg.tar
 rm D2LValence-0.1.14-py2.7.egg.tar
 
-# Rebuild Egg
+# Build Egg and Get Dependencies
 sleep 1
 cd $APPDIR
 pwd
 cd QuizSmith
 ../python/bin/python setup.py develop
 
-
-
 echo Finished!
 sleep 1
 
 echo Note: It is okay to rerun this installer.
-

@@ -1,0 +1,30 @@
+<metal:html 
+    xmlns:tal="http://xml.zope.org/namespaces/tal"
+    xmlns:metal="http://xml.zope.org/namespaces/metal"
+    use-macro="load: edit-master.pt">
+    
+    
+    <tal:block metal:fill-slot="title">
+        <title>Manage - Import - QuizSmith</title>
+    </tal:block>  
+    
+    <tal:block metal:fill-slot="logo" content="nothing" />
+    
+    <tal:block metal:fill-slot="content">
+    
+        <div class="h3">Manage: Import Category</div>
+
+        <form action="${request.application_url}${request.path}" method="post" enctype="multipart/form-data">
+            <div class="row">
+                <label>Upload a QuizSmith category/module:</label>
+                <input type="file" name="form.import" size="80" />
+            </div>
+            <div class="options nb">
+                <input class="g button" type="submit" name="form.submit" value="Import" /> 
+                <a class="button" href="${request.application_url}/edit">Back</a>
+            </div>
+        </form>
+
+    </tal:block>
+    
+</metal:html>

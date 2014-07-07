@@ -62,6 +62,16 @@ class RootACL(object):
     def __init__(self, request):
         self.request = request
 
+    def has_permissions(self, permissions):
+        """ String or List Allowed """ 
+        if isinstance(permissions, list):
+            for permission in permissions:
+                if has_permission(permission, self, self.request):
+                    return True
+            return False
+        else:
+            return has_permission(permissions, self, self.request)
+        
     @property
     def __acl__(self):
         return ACL.enforce_rights(ACL.factory())
@@ -80,6 +90,15 @@ class PyramidFormalchemyACL(Models):
 class RequestExtension(Request):
     """ Extend request object and add in useful data """
 
+    errors = ''
+    
+    @property
+    def notification(self):
+        msg = self.session.pop_flash()
+        if msg:
+            return msg[0]
+        return None
+       
     @property
     def user(self):
         userid = unauthenticated_userid(self)
@@ -102,22 +121,14 @@ class RequestExtension(Request):
     def active_base_theme(self):
         return Properties.get('ACTIVE_THEME','Original')
 
-    # @reify
-    # def _get_active_base_theme(self):
-        # return Properties.get('ACTIVE_THEME','Original')
+    @property
+    def can_edit(self):
+        return self.has_permissions(['Edit','Administrate'])
         
-    # @reify
-    # def active_edit_theme(self):
-        # return Properties.get('EDIT_THEME','AdminPanel')
-    
-    #@reify
-    #def theme_url(self):
-    #    return self.application_url + '/themes/' + self.active_base_theme
-
-    # @reify
-    # def edit_url(self):
-        # return self.application_url + '/themes/' + self.active_edit_theme
-
+    @property  
+    def can_admin(self):
+        return self.has_permissions(['Administrate'])
+        
     def has_permissions(self,permissions):
         """ String or List Allowed """ 
         if isinstance(permissions, list):

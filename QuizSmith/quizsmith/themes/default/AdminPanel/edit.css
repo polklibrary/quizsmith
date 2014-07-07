@@ -1,0 +1,215 @@
+/*
+*   Copyright 2014 UW Board of Regents
+*
+*   Licensed under the Apache License, Version 2.0 (the "License");
+*   you may not use this file except in compliance with the License.
+*   You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+*   Unless required by applicable law or agreed to in writing, software
+*   distributed under the License is distributed on an "AS IS" BASIS,
+*   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*   See the License for the specific language governing permissions and
+*   limitations under the License.
+*/
+body { color: #444444; background-color: white; }
+h1, .h1 {
+    font-size: 28px;
+    font-weight: bold;
+    margin: 0;
+}
+h2, .h2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+}
+h3, .h3 { 
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0;
+}
+h4, .h4 {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0 0 5px;
+}
+label{ font-weight: bold; }
+select, input[type="text"] { border: 1px solid #AAAAAA; border-radius: 3px; padding: 2px; }
+input[type="text"]:hover , input[type="text"]:focus, select:hover { border: 1px solid #3175EA; }
+input[type="file"]{ background-color: #FFFFFF; border: 1px solid #AAAAAA; border-radius: 5px; padding: 2px; }
+table.mceLayout td.mceToolbar, table.mceLayout .mceStatusbar  { background-color: #cccccc; }
+table.mceLayout td.mceToolbar .mceButton { border: 1px solid #dddddd; }
+
+.tar { text-align: right; }
+.tal{ text-align: left; }
+.tac { text-align: center; }
+.cursor.help { cursor: help; }
+.help { font-weight: normal !important; font-style: italic; }
+.row { padding: 15px 25px; }
+.row:nth-child(odd) { background-color: #DDDDDD; border-bottom: 1px solid #bbbbbb; }
+.row:nth-child(even) { background-color: #E7E7E7; border-bottom: 1px solid #bbbbbb; }
+.row.end { border-bottom: 0px none; }
+#message {
+    border-radius: 0 0 0 0px !important;
+    border: 0 none !important;
+    color: white;
+    font-weight: bold;
+    padding: 8px 0px 7px 0px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 100;
+}
+
+/* UNKNOWN START */
+#edit-content .subheading {
+    padding: 5px 10px;
+}
+
+.toleft {
+    margin: 10px 0px 0px 172px;
+    padding: 5px 10px;
+    width: 780px;
+}
+li.sub {
+    margin-left: 20px;
+    list-style-type: circle;
+}
+.updates {
+    background-color: white;
+    border: 2px solid #6495ED;
+    border-radius: 10px;
+    color: darkred;
+    font-weight: bold;
+}
+span.note { font-size: 12px; font-style: italic; }
+/* UNKNOWN END */
+
+/* === EDIT STANDARDS ===================*/
+#content {
+    font-size: 12px;
+    margin: 0;
+    width: 100%;
+}
+#edit-nav {
+    background-color: white; 
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 150px;
+}
+#nav-links { border-right: 1px solid #cccccc; height: 100%; }
+#edit-nav #nav-links a:hover { border-right: 3px solid #F0AD4E; }
+#edit-nav #nav-links  a.nav-selected { border-right: 3px solid #3175EA; }
+#edit-nav  a { display: block; padding: 5px 0px 0px 10px; }
+#edit-nav  > div.h3, #edit-content > div.h3 {
+    color: white;
+    background-color: #666666;
+    border-right: 1px solid white;
+    padding: 5px 15px;
+}
+#edit-content {
+    background-color: white;
+    position:absolute;
+    right: 0;
+    left: 150px;
+    top: 0;
+}
+#edit-content  .options {
+    border-bottom: 1px solid #bbbbbb;
+    padding: 10px;
+    text-align: right;
+}
+#edit-content  .options.nb {
+    border-bottom: 0 none !important;
+}
+#edit-content .button {
+   background-color: #428BCA;
+   border: 1px solid #357EBD;
+   color: white;
+   cursor: pointer;
+   display: inline-block;
+   font-size: 14px;
+   font-weight: bold;    
+   margin-bottom: 2px;
+   margin-right: 10px;
+   padding: 6px 12px;
+   vertical-align: middle;
+}
+#edit-content  .button:hover { background-color: #3276B1; border-color: #285E8E; }
+#edit-content .button.g {
+    background-color: #5CB85C;
+    border-color: #4CAE4C;
+}
+#edit-content  .button.g:hover { background-color: #47A447; border-color: #398439; }
+#edit-content .button.r {
+   background-color: #D9534F;
+   border-color: #D43F3A;
+}
+#edit-content  .button.r:hover { background-color: #D2322D; border-color: #AC2925; }
+
+/* === MAIN EDIT LANDING PAGE ===================*/
+#content #home-link { color: white !important; font-style: italic; padding: 0;}
+
+/* === CATEGORY EDIT ===================*/
+#edit-content #save-order { display: none; }
+#edit-content > .edit-category  textarea {height: 600px; width: 775px;}
+#edit-content > .edit-category  textarea.normal { height: initial; width: 98%; }
+#edit-content > .edit-category div.row.playable select{ float: left; width: 30%; }
+#edit-content > .edit-category div.row.playable div { font-weight: bold; float: left; width: 60%; }
+
+/* === QUESTIONS LIST ===================*/
+#edit-content .question-list div.h4 { border-bottom: 1px solid #aaaaaa; font-weight: bold; padding: 0px !important; }
+#edit-content .question-list div.h4 > a { float: right; margin-top: 5px; }
+#edit-content .question-list div.row  > div.ah{ margin: 5px 0 5px 0; padding: 0 0 0 30px; }
+
+
+/* === QUESTION EDIT ===================*/
+#edit-content .question-edit textarea, #edit-content .question-edit div.wrapper-questions iframe { height: 50px !important; width: 750px; }
+#edit-content .question-edit  div.mce-row { margin-bottom: 10px; width: 750px; }
+#edit-content .question-edit .remove { float: right; margin-right: -5px; padding: 4px 12px;}
+#edit-content .question-edit  span.add_wrong > select, #edit-content .question-edit  span.add_wrong > span.button{ margin-left: 4px; }
+
+
+/* === GROUPS EDIT ===================*/
+#edit-content .edit-groups form.group_col > label, .label-fmt { display: inline-block; text-align: right; width: 80px; }
+
+/* === CREDITS EDIT ===================*/
+#edit-content .hidden  { display:none; }
+ul.sortable { width: 500px; }
+ul.sortable .remove, ul.sortable .micro{ padding: 2px 6px !important; margin: 0 5px !important;}
+ul.sortable li.state-default {
+    background: url('images/sort_both_d.png') no-repeat center left #cccccc;
+    border: 1px dashed #bbbbbb;
+    cursor: n-resize;
+    list-style: none;
+    margin-bottom: 4px;
+    padding: 5px 5px 5px 20px;
+}
+ul.sortable li.state-highlight {
+    list-style: none;
+    border-top: 3px solid #5CB85C;
+    height: 5px;
+}
+ul.sortable li > * { vertical-align: middle; }
+ul.sortable li > label, .sortable li > span  { cursor: n-resize; }
+ul.sortable li:hover { border: 1px dashed #3175EA; }
+#edit-content div.list-example {
+    background-color: white;
+    border: 1px solid #AAAAAA;
+    border-radius: 10px;
+    margin: 0 auto;
+    text-align: center;
+    width: 200px;
+}
+
+/* === LEADERBOARD EDIT ===================*/
+fieldset { background-color: #FFF8DC; }
+fieldset > div{ margin-bottom: 2px; }
+fieldset  label{ display: inline-block; margin-right: 5px; text-align: right; width: 55px; }
+
+
+
+

@@ -27,6 +27,7 @@ class Help(BaseView):
 
     @view_config(route_name='help')
     def help(self):
+        self.response['help_address'] = Properties.get('MAILER_HELP_ADDRESS',default='')
         return self.template('help.pt')
         
         

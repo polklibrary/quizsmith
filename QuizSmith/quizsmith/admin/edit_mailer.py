@@ -33,16 +33,18 @@ class EditView(EditBaseView):
             mfrom.prop_value = self.request.params.get('edit.mailer.from','')
             mfeedback = Properties.by({'prop_name':'MAILER_FEEDBACK_ADDRESS'}).first()
             mfeedback.prop_value = self.request.params.get('edit.mailer.feedback','')
+            mhelp = Properties.by({'prop_name':'MAILER_HELP_ADDRESS'}).first()
+            mhelp.prop_value = self.request.params.get('edit.mailer.help','')
             mbody = Properties.by({'prop_name':'MAILER_BODY'}).first()
             mbody.prop_value = self.request.params.get('edit.mailer.body','')
             transaction.commit()
-            self.response['message'] = "Mailer Settings Changed"
-            self.response['message_class'] = "info"
+            self.notify('Changes saved!')
             
         self.response['mailer'] = {'subject': Properties.get('MAILER_TO_SUBJECT',''),
                                    'from_address': Properties.get('MAILER_GLOBAL_FROM_ADDRESS',''),
                                    'feedback_address': Properties.get('MAILER_FEEDBACK_ADDRESS',''),
                                    'body': Properties.get('MAILER_BODY',''),
+                                   'help_address': Properties.get('MAILER_HELP_ADDRESS',''),
                                    }
 
         return self.template('/edit-mailer.pt', theme='AdminPanel')  

@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal">
+
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+  
+    <tal:block metal:define-slot="title">
+        <title>Trivia</title>
+    </tal:block>  
+    <link rel="stylesheet" type="text/css" href="${request.application_url}/themes/${instance_id}/SimpleBlue/ui-lightness/jquery-ui-1.10.2.custom.min.css" />
+    <link rel="stylesheet" type="text/css" href="${request.application_url}/themes/${instance_id}/SimpleBlue/trivia.css" />
+    <noscript>
+        <style> 
+            .needs-js { display:none; } 
+        </style>
+    </noscript>
+  
+    <script type="text/javascript" src="${request.application_url}/themes/${instance_id}/SimpleBlue/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="${request.application_url}/themes/${instance_id}/SimpleBlue/jquery-ui-1.10.2.custom.min.js"></script>
+    <script type="text/javascript" src="${request.application_url}/themes/${instance_id}/SimpleBlue/jquery-ui-1.10.2.custom.min.js"></script>
+    <script type="text/javascript" src="${request.application_url}/themes/${instance_id}/SimpleBlue/trivia.js"></script>
+    <script type="text/javascript">
+        Trivia.root_url = "${request.application_url}";
+        Trivia.static_url = "${request.application_url}/themes/${instance_id}/SimpleBlue/";
+    </script>
+    
+    
+    <tal:block metal:define-slot="css" tal:content="nothing">
+       Extendable CSS Slot
+    </tal:block>  
+    <tal:block metal:define-slot="js" tal:content="nothing">
+       Extendable JS Slot
+    </tal:block> 
+  
+</head>
+
+<body>
+    <noscript class="javascript-required">This application requires javascript enabled.</noscript>
+    <tal:block metal:define-slot="body">
+    
+    
+        <tal:block metal:define-slot="logo">
+            <div id="logo">
+                <a href="${request.application_url}">
+                    <img src="${request.application_url}/themes/${instance_id}/SimpleBlue/images/logo.png" alt="Logo" />
+                </a>
+            </div>
+        </tal:block>
+        
+        <tal:block define="message request.notification" condition="message">
+            <div id="message" class="${message.lvl}">${message.content}</div> 
+        </tal:block> 
+        
+        <div id="content">
+            <tal:block metal:define-slot="content" tal:content="nothing" />
+        </div>  
+
+        <div id="footer">
+            <tal:block metal:define-slot="footer" content="nothing" />
+        </div> 
+        
+        <tal:block on-error="nothing" replace="structure analytics"> </tal:block>
+        
+    </tal:block>
+    
+</body>
+</html>

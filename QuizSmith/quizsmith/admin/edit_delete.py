@@ -40,4 +40,5 @@ class EditView(EditBaseView):
             DBSession.flush()
         
         transaction.commit() # make it so number one
+        self.notify('Removed!')
         return HTTPFound(location=self.request.params['back'])

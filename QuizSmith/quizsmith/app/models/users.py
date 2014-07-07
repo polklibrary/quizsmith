@@ -99,6 +99,10 @@ class Users(Base,TriviaModel):
             return []
         return DBSession.query(Groups).join(Users.groups).filter(Users.id==self.id).all()
         
+    @property
+    def my_groups(self):
+        return self.get_groups()
+        
     def _set_password(self, password):
         if password == None:
             self.password = None

@@ -1,0 +1,104 @@
+<metal:html 
+    xmlns:tal="http://xml.zope.org/namespaces/tal"
+    xmlns:metal="http://xml.zope.org/namespaces/metal"
+    use-macro="load: edit-master.pt">
+    
+    
+    <tal:block metal:fill-slot="title">
+        <title>Manage - Credits - QuizSmith</title>
+    </tal:block>  
+    
+    <tal:block metal:fill-slot="js">
+        <script type="text/javascript">
+        
+            var RemoveAction = function(t,e) {
+                jq(t).parent().remove();
+            }
+           
+            jq(document).ready( function() {
+
+                var change_event = function() {
+                    jq('.sortable').find('li').each(function(i,t){
+                        jq(t).find('select').attr('name','data_' + i + '_type');
+                        jq(t).find('input[type="text"]').attr('name','data_' + i + '_val');
+                    });
+                }
+                
+                jq('.sortable ').sortable({'placeholder':'state-highlight', 
+                    stop: function() {
+                        change_event();
+                    }
+                });
+                
+                // Add new row
+                jq('#add-row').click(function() {
+                    var row = jq('#credit-init > li').clone();
+                    jq(row).find('input.remove').addClass('validate');
+                    jq('ul.sortable').append(row);
+                    change_event();
+                });
+                
+                // Setup
+                change_event();
+                
+            });
+        </script>
+    </tal:block>  
+    
+    <tal:block metal:fill-slot="logo" content="nothing" />
+   
+    <tal:block metal:fill-slot="content">
+    
+        <div class="h3">Credits</div>
+        
+        <div class="edit-category">
+            <form method="post">
+                <div class="row">
+                    Create the credits page here. Each type in the dropdowns will generally look like the following depending on your game theme:
+                    <div class="list-example">
+                        <b>This is my "Title"</b><br />
+                        <span>This is my "Name"</span><br />
+                        <i>This is my "Email"</i><br />
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <ul class="sortable">
+                    <tal:block repeat="credit credits">
+                        <li class="state-default">
+                            <select name="type">
+                                <option value="name" tal:attributes="selected credit.type=='name'">Name</option>
+                                <option value="email" tal:attributes="selected credit.type=='email'">Email</option>
+                                <option value="title" tal:attributes="selected credit.type=='title'">Title</option>
+                            </select>
+                            <input type="text" value="${credit.value}" size="45" name="val"/>
+                            <input class="button remove r right validate" data-validate-fn="RemoveAction" type="button" value="Remove" />
+                        </li>
+                    </tal:block>
+                    </ul>
+                    <input class="button g" type="button" value="Add Another Row" id="add-row" />
+                    
+                </div>
+                
+                <div class="options nb"> 
+                    <input class="button g" type="submit" value="Save Changes" name="edit.credits.submit" />
+                    <a class="button" href="${request.application_url}/edit">Cancel</a>
+                </div> 
+            </form>
+        </div>
+        
+        <ul id="credit-init" class="hidden">
+            <li class="state-default">
+                <select name="type">
+                    <option value="name">Name</option>
+                    <option value="email">Email</option>
+                    <option value="title">Title</option>
+                </select>
+                <input type="text" value="" size="45" name="val" />
+                <input class="button remove r right" data-validate-fn="RemoveAction" type="button" value="Remove" />
+            </li>
+        </ul>
+        
+    </tal:block>
+    
+</metal:html>

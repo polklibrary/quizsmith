@@ -1,0 +1,84 @@
+<metal:html 
+    xmlns:tal="http://xml.zope.org/namespaces/tal"
+    xmlns:metal="http://xml.zope.org/namespaces/metal"
+    use-macro="load: master.pt">
+    
+    <tal:block metal:fill-slot="css">
+        <style>
+            #accessible {
+                font-family: Arial, Helvetica, sans-serif;
+            }
+            #accessible > div {
+                background-color: white;
+                border: 1px solid #999999;
+                margin: 20px auto;
+                padding: 20px;
+                width: 800px;
+            }
+            #accessible > div.last {
+                background-color: transparent;;
+                border: 0px none;
+                text-align: center;
+            }
+            #accessible > div span.number {
+                font-size: 20px;
+                font-weight: bold;
+            }
+            #accessible > div span.question {
+                font-size: 18px;
+                font-weight: bold;
+            }
+            #accessible > div label {
+                font-size: 16px;
+                font-weight: normal;
+                margin-left: 20px;
+            }
+        </style>
+    </tal:block> 
+    
+    <tal:block metal:fill-slot="title">
+        <title>Playing - Trivia</title>
+    </tal:block>  
+    
+    <tal:block metal:fill-slot="logo"></tal:block>  
+    
+    <tal:block metal:fill-slot="content">
+        
+        <form id="accessible">
+        
+            <div tal:repeat="result results">
+                
+                <div>
+                    <span class="number" tal:content="repeat.result.number" />. &nbsp;
+                    <span class="question" tal:content="structure result.question_set.question" />
+                </div>
+                
+                <br />
+                
+                <tal:loop repeat="answer result.answer">
+                    <label>
+                        <input type="radio" name="question.${result.question_set.id}" value="${answer.id}" />
+                        ${answer.content}
+                    </label>
+                    <br />
+                </tal:loop>
+                
+                <br />
+                
+            </div>
+            
+            <div class="last">
+                <input class="link" type="submit" name="form.submit" value="Submit" />
+                <input type="hidden" name="st" value="${time_started}" />
+                <input type="hidden" name="nojs" value="1" />
+            </div>
+            
+            <br />
+            <br />
+            <br />
+        
+        </form>
+        
+    </tal:block>
+    
+</metal:html>

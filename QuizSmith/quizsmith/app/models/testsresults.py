@@ -58,3 +58,12 @@ class TestsResults(Base, TriviaModel):
             return json.loads(self.answer_choices)
         return ""
     
+        
+        
+        
+        
+        
+        
+        
+        
+    

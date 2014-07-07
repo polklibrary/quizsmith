@@ -1,0 +1,69 @@
+<metal:html 
+    xmlns:tal="http://xml.zope.org/namespaces/tal"
+    xmlns:metal="http://xml.zope.org/namespaces/metal"
+    use-macro="load: edit-master.pt">
+    
+    
+    <tal:block metal:fill-slot="title">
+        <title>Manage - Questions - QuizSmith</title>
+    </tal:block>  
+    
+    <tal:block metal:fill-slot="logo" content="nothing" />
+    
+    <tal:block metal:fill-slot="content">
+    
+        <div class="h3">Managing: ${active_category.name}</div>
+        
+        <div class="options">
+            <a class="button g" href="${request.application_url}${request.path}/new">Add New Question</a>
+            <a class="button" href="${request.application_url}${request.path}/../">Go to Category</a>
+        </div>
+        
+        <div class="question-list">
+            <tal:block repeat="set question_sets">
+            
+                <div class="row">
+                    <div class="h4">
+                        ${set.rank}) Question
+                        <a class="button r validate" href="${request.application_url}/edit/delete/QuestionSets/${set.id}?back=${request.application_url}${request.path}" title="Click to remove">Remove</a>
+                        <a class="button" href="${request.application_url}${request.path}/${set.id}" title="Click to edit">Edit Question</a>
+                    </div>
+                    
+                    <label>Variations</label>
+                    <ul>
+                        <li class="q" tal:repeat="question set.questions">
+                            <span tal:replace="structure question.question" />
+                        </li>
+                    </ul>
+                    
+                    <label>Correct Answer</label>
+                    <ul>
+                        <li class="ca" tal:condition="set.correct_answer">${set.correct_answer.answer}</li>
+                    </ul>
+                    
+                    <label>Wrong Answers</label>
+                    <ul>
+                        <li class="wa" tal:repeat="wrong set.wrong_answers">
+                            ${wrong.answer}
+                        </li>
+                    </ul>
+                    
+                    <label>Post Question Help</label>
+                    <div class="ah" tal:content="structure set.answer_help"></div>
+                    
+                </div>
+            </tal:block>
+            <tal:block condition="not: question_sets">
+                No questions currently in this category.
+            </tal:block>
+
+        </div>
+        
+        <div class="options nb">
+            <a class="button g" href="${request.application_url}${request.path}/new">Add New Question</a>
+            <a class="button" href="${request.application_url}${request.path}/../">Go to Category</a>
+        </div>
+        
+    </tal:block>
+    
+</metal:html>

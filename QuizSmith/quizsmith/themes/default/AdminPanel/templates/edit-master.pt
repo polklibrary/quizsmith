@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal">
+
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+  
+    <tal:block metal:define-slot="title">
+        <title>Manage - QuizSmith</title>
+    </tal:block>  
+    <link rel="stylesheet" type="text/css" href="${request.application_url}/themes/${instance_id}/AdminPanel/ui-lightness/jquery-ui-1.10.2.custom.min.css" />
+    <link rel="stylesheet" type="text/css" href="${request.application_url}/themes/${instance_id}/AdminPanel/trivia.css${request.day_caching}" />
+    <link rel="stylesheet" type="text/css" href="${request.application_url}/themes/${instance_id}/AdminPanel/edit.css${request.day_caching}" />
+  
+    <script type="text/javascript" src="${request.application_url}/themes/${instance_id}/AdminPanel/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="${request.application_url}/themes/${instance_id}/AdminPanel/jquery-ui-1.10.2.custom.min.js"></script>
+    <script type="text/javascript" src="${request.application_url}/themes/${instance_id}/AdminPanel/fanstatic/tinymce/tiny_mce_src.js"></script>
+    <script type="text/javascript" src="${request.application_url}/themes/${instance_id}/AdminPanel/tinymce-settings.js${request.day_caching}"></script>
+    <script type="text/javascript" src="${request.application_url}/themes/${instance_id}/AdminPanel/trivia.js${request.day_caching}"></script>
+    <script type="text/javascript" src="${request.application_url}/themes/${instance_id}/AdminPanel/edit.js${request.day_caching}"></script>
+    <script type="text/javascript">
+        Trivia.root_url = "${request.application_url}";
+        Trivia.static_url = "${request.application_url}/themes/${instance_id}/AdminPanel/";
+    </script>
+    
+    
+    <tal:block metal:define-slot="css" tal:content="nothing">
+       Extendable CSS Slot
+    </tal:block>  
+    <tal:block metal:define-slot="js" tal:content="nothing">
+       Extendable JS Slot
+    </tal:block> 
+  
+</head>
+
+<body>
+
+    <tal:block define="message request.notification" condition="message">
+        <div id="message" class="${message.lvl}">${message.content}</div> 
+    </tal:block> 
+
+    <tal:block metal:define-slot="body">
+    
+        <div id="content">
+        
+            <div id="edit-nav">
+                <div class="h3"><a id="home-link" href="${request.application_url}/edit">QuizSmith</a></div>
+                <div id="nav-links">
+                    <a href="${request.application_url}/edit/categories">Categories</a>
+                    <a href="${request.application_url}/edit/credits">Credits</a>
+                    <a href="${request.application_url}/edit/leaderboard">Leaderboard</a>
+                    
+                    <tal:block condition="request.can_admin">
+                        <a href="${request.application_url}/edit/mailer">Mailer</a>
+                    </tal:block>
+                    
+                    <a href="${request.application_url}/edit/info">Site Info</a>
+                    
+                    <tal:block condition="request.can_admin">
+                        <a href="${request.application_url}/edit/reports">Reports</a>
+                    </tal:block>
+                    
+                    <tal:block condition="request.can_admin">
+                        <a href="${request.application_url}/edit/theme">Themes</a>
+                    </tal:block>
+                    
+                    <tal:block condition="request.can_admin">
+                        <a href="${request.application_url}/edit/groups">Users &amp; Groups</a>
+                    </tal:block>
+                    
+                    <br />
+                    
+                    <a class="nav-x" href="${request.application_url}">Back To Main Menu</a>
+                </div>
+                <div class="clear"></div>
+            </div>
+            
+            <div id="edit-content">
+                <tal:block metal:define-slot="content" tal:content="nothing" />
+            </div>
+            
+        </div>  
+        
+        <br />
+        <br />
+        
+    </tal:block>
+</body>
+</html>

@@ -31,6 +31,7 @@ class Playing(BaseView):
             return category
         raise HTTPForbidden()
 
+        
     @view_config(route_name='playing', permission=ACL.AUTHENTICATED)
     def playing(self):
         id = int(self.request.matchdict['id'])
@@ -57,7 +58,8 @@ class Playing(BaseView):
             self.response['category']['transition_in'] = Result2Dict(c.get_transition_in())
             self.response['category']['transition_out'] = Result2Dict(c.get_transition_out())
             self.response['question'] = result.question
-            #self.response['answers'] = TestManager.get_answers(result.question_sets_id)
+            self.log_if_error('Current Test: %d' % result.tests_id)
+            self.log_if_error('Current Test Result: %d' % result.id)
             self.response['answers'] = result.get_answers()
             
             result.attempted = True
@@ -70,12 +72,13 @@ class Playing(BaseView):
             test.completed = True
             transaction.commit()
             self.response['finished'] = True
-            
+        
         return self.response
         
         
     @view_config(route_name='check', renderer='json', permission=ACL.AUTHENTICATED)
     def check(self):
+    
         self.response['was_correct'] = -1
         category = self._secure_get_category(int(self.request.matchdict['id']))
         
@@ -85,6 +88,10 @@ class Playing(BaseView):
             self.response['was_correct'] = TestManager.check_answer_byid(self.request.user.current_question, answer)
             
             result = TestsResults.by({'tests_id':self.request.user.current_test, 'question_sets_id':self.request.user.current_question}).first()
+            self.log_if_error('Current Test: %d' % self.request.user.current_test)
+            self.log_if_error('Current Question: %d' % self.request.user.current_question)
+            self.log_if_error('Chosen Answer: %s' % answer)
+            self.log_if_error('Duration: %s' % duration)
             test = Tests.by(self.request.user.current_test).first()
 
             if not self.response['was_correct'] and duration > 0:

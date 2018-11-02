@@ -1,5 +1,5 @@
 QuizSmith
 =========
 
-See: http://www.uwosh.edu/library/quizsmith
+See: http://www.uwosh.edu/library/technology/quizsmith
 
